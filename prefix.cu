@@ -43,7 +43,7 @@ main (int args, char **argv)
   auto time_beg = wtime();  
  // prefix_scan <<< 128,128 >>> (x_d,n);
 	cout << "done " ;
-  H_ERR(cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost));
+ // H_ERR(cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost));
   auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
 
