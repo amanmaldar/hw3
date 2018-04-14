@@ -54,8 +54,11 @@ main (int args, char **argv)
   int *x= (int *)malloc(sizeof(int)*n);
 
   // Initialize matrix A and B
-  cout << "original array: "
-  for (int i = 0; i < n; i++)    {      x[i] = rand () % 5;  cout << x[i] << " ";       }
+  cout << "original array: ";
+  for (int i = 0; i < n; i++) {     
+	  x[i] = rand () % 5;  
+	  cout << x[i] << " ";       
+  }
   cout << endl;
 	
   int *x_d;	//device storage pointers 
