@@ -37,7 +37,7 @@ main (int args, char **argv)
 	
   H_ERR(cudaMalloc ((void **) &x_d, sizeof (int) * n));
 
-  H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
+  //H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
   
   // perform prefix_scan on GPU
  // auto time_beg = wtime();  
