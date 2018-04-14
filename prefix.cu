@@ -47,7 +47,7 @@ main (int args, char **argv)
 	
   cout << "original array: ";
   for (int i = 0; i < n; i++) {     
-	  x[i] = rand () % 5;  
+	  x[i] = rand () % 5 + 2;  
 	  cout << x[i] << " ";       
   }   cout << endl;
 	
