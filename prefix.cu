@@ -38,7 +38,7 @@ main (int args, char **argv)
   
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
-  prefix_scan <<< 128,128 >>> (x_d,n);
+ // prefix_scan <<< 128,128 >>> (x_d,n);
 	cout << "done " ;
   cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el = wtime() - time_beg;
