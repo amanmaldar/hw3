@@ -73,7 +73,7 @@ cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 // perform multiplication on GPU
 auto time_beg = wtime();
 //vec_mult_kernel <<< 128,256 >>> (a_d, n );
-scanNew(int *b_d, int *a_d, int n);
+scanNew(*b_d, *a_d, n);
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   cout << "result is: ";
 for (int i = 0; i < n; i++) {  cout << b[i] << " ";}
