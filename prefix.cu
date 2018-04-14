@@ -51,10 +51,10 @@ cudaMalloc ((void **) &c_d, sizeof (int) * M*P);
 cudaMemcpy (a_d, a, sizeof (int) * M*N, cudaMemcpyHostToDevice);
 cudaMemcpy (b_d, b, sizeof (int) * N*P, cudaMemcpyHostToDevice);
 // perform multiplication on GPU
-time_beg = wtime();
+auto time_beg = wtime();
 vec_mult_kernel <<< 128,256 >>> (a_d, b_d, c_d, M, N,P );
 cudaMemcpy (c, c_d, sizeof (int) * M*P, cudaMemcpyDeviceToHost);
-el = wtime() - time_beg;
+auto el = wtime() - time_beg;
 cout << "Time for <128,256> is: " << el << " Sec " << endl;
 return 0;
 }
