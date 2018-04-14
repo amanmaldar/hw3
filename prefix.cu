@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <chrono>
-#include "../helper/wtime.h"
+#include "helper/wtime.h"
 using namespace std;
 __global__ void vec_mult_kernel (int *a, int *b, int *c, int M, int N) {
 int tid = blockIdx.x; // initialize with block number. Tid = 0 -> 10240
