@@ -7,7 +7,7 @@
 #include "helper/wtime.h"
 using namespace std;
 __global__ void vec_mult_kernel (int *a, int n) {
-int tid = blockIdx.x; // initialize with block number. Tid = 0 -> 10240
+int tid = threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
 smem[threadIdx.x] = a[threadIdx.x];
 __syncthreads(); //wait for all threads
