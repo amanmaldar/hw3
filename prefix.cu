@@ -30,7 +30,7 @@ __global__ void prefix_scan (int *x_d, int n) {
 		}	 */
 		x_d[tid] = smem[tid];
   	  
-		tid += n;	// Jump to next block which is away by 128 blocks w.r.t. current one
+		tid += 8;	// Jump to next block which is away by 128 blocks w.r.t. current one
   	}	
 
 } // end kernel function
@@ -58,7 +58,7 @@ main (int args, char **argv)
   
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
-  prefix_scan <<< 128,128 >>> (x_d,n );
+  prefix_scan <<< 128,128 >>> (x_d,n);
   cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
