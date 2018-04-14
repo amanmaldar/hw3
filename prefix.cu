@@ -10,29 +10,28 @@ using namespace std;
 
 // rows = M = 10240, columns = N = 256, vector b[256].  1 block operates on 1 row. Each block has 256 threads.
 // Number of blocks = 128, so increment tid by 128.
-__global__ void prefix_scan (int *x, int *x_d, int n) { 
+__global__ void prefix_scan (int *x_d, int n) { 
   	int tid = threadIdx.x + blockIdx.x * blockDim.x;		// initialize with block number. Tid = 0 -> 10240
  	//__shared__ has scope of block. All threads in block has access to it.
- 	__shared__ int smem[8];   
- 	//copy vector ‘b’ element to a corresponding thread location index
- 	smem[tid] = x[tid];
- 	__syncthreads(); 	//wait for all threads
+ 	__shared__ int smem[n];   
+ 	smem[tid] = x_d[tid];
+ 	__syncthreads(); 	//wait for all threads to copy data to smem
 
-	if (tid ==0){
-	smem[tid] = smem[tid+1];
-	x_d[tid] = smem[tid];
-	}
-	
- 
-  while (tid < n) {   
-	smem[tid] += smem[tid-1];
-	  x_d[tid] = smem[tid];
-	__syncthreads();
-  }
-     
+	while (tid < n) { 
+		
+		if (tid == 0){
+			smem[tid] = smem[tid+1];
+			x_d[tid] = smem[tid];
+		}
+		else {
+			smem[tid] += smem[tid-1];
+			x_d[tid] = smem[tid];
+			__syncthreads();
+		}	 
+  	  
+		tid += n;	// Jump to next block which is away by 128 blocks w.r.t. current one
+  	}	
 
-     tid += n;	// Jump to next block which is away by 128 blocks w.r.t. current one
- } // end while
 } // end kernel function
 
 
@@ -58,7 +57,7 @@ main (int args, char **argv)
   
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
-  prefix_scan <<< 128,128 >>> (x, x_d,n );
+  prefix_scan <<< 128,128 >>> (x_d,n );
   cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
