@@ -28,7 +28,7 @@ tid += 128; // Jump to next block which is away by 128 blocks w.r.t. current one
 */
 
 
-__global__ void scan(int *g_odata, int *g_idata, int n)
+__global__ void scanNew(int *g_odata, int *g_idata, int n)
 {
  extern __shared__ float temp[]; // allocated on invocation
  int thid = threadIdx.x;
@@ -73,7 +73,7 @@ cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 // perform multiplication on GPU
 auto time_beg = wtime();
 //vec_mult_kernel <<< 128,256 >>> (a_d, n );
-void scan(int *b_d, int *a_d, int n);
+scanNew(int *b_d, int *a_d, int n);
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   cout << "result is: ";
 for (int i = 0; i < n; i++) {  cout << b[i] << " ";}
