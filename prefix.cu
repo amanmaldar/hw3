@@ -19,7 +19,7 @@ __global__ void prefix_scan (int *x_d, int n) {
 
 	while (tid < n) { 
 		
-		if (tid == 0){
+	/*	if (tid == 0){
 			smem[tid] = smem[tid+1];
 			x_d[tid] = smem[tid];
 		}
@@ -27,7 +27,8 @@ __global__ void prefix_scan (int *x_d, int n) {
 			smem[tid] += smem[tid-1];
 			x_d[tid] = smem[tid];
 			__syncthreads();
-		}	 
+		}	 */
+		x_d[tid] = smem[tid];
   	  
 		tid += n;	// Jump to next block which is away by 128 blocks w.r.t. current one
   	}	
