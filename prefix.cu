@@ -40,11 +40,11 @@ main (int args, char **argv)
   H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
   
   // perform prefix_scan on GPU
-  auto time_beg = wtime();  
+ // auto time_beg = wtime();  
  // prefix_scan <<< 128,128 >>> (x_d,n);
 	cout << "done " ;
  // H_ERR(cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost));
-  auto el = wtime() - time_beg;
+  //auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
 
   cout << "result is: " ;
