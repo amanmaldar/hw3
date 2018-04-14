@@ -34,26 +34,19 @@ int
 main (int args, char **argv)
 {
 // configure matrix dimensions
-int M,N,P;
-M = 10240;
-N = 256;
-P = 1;
-int *a= (int *)malloc(sizeof(int)*M*N);
-int *b= (int *)malloc(sizeof(int)*N*P);
-int *c= (int *)malloc(sizeof(long)*M*P);
+int n = 8;
+int *a= (int *)malloc(sizeof(int)*n);
 // Initialize matrix A and B
-for (int i = 0; i < M*N; i++) { a[i] = rand () % 5; }
-for (int i = 0; i < N*P; i++) { b[i] = rand () % 5; }
-int *a_d, *b_d, *c_d; //device storage pointers
-cudaMalloc ((void **) &a_d, sizeof (int) * M*N);
-cudaMalloc ((void **) &b_d, sizeof (int) * N*P);
-cudaMalloc ((void **) &c_d, sizeof (int) * M*P);
+for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; }
+int *a_d; //device storage pointers
+
+cudaMalloc ((void **) &a_d, sizeof (int) * n);
 cudaMemcpy (a_d, a, sizeof (int) * M*N, cudaMemcpyHostToDevice);
-cudaMemcpy (b_d, b, sizeof (int) * N*P, cudaMemcpyHostToDevice);
+
 // perform multiplication on GPU
 auto time_beg = wtime();
-vec_mult_kernel <<< 128,256 >>> (a_d, b_d, c_d, M, N );
-cudaMemcpy (c, c_d, sizeof (int) * M*P, cudaMemcpyDeviceToHost);
+//vec_mult_kernel <<< 128,256 >>> (a_d, n );
+cudaMemcpy (a, a_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
 auto el = wtime() - time_beg;
 cout << "Time for <128,256> is: " << el << " Sec " << endl;
 return 0;
