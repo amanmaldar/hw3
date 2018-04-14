@@ -52,7 +52,7 @@ cudaMemcpy (a_d, a, sizeof (int) * M*N, cudaMemcpyHostToDevice);
 cudaMemcpy (b_d, b, sizeof (int) * N*P, cudaMemcpyHostToDevice);
 // perform multiplication on GPU
 auto time_beg = wtime();
-vec_mult_kernel <<< 128,256 >>> (a_d, b_d, c_d, M, N,P );
+vec_mult_kernel <<< 128,256 >>> (a_d, b_d, c_d, M, N );
 cudaMemcpy (c, c_d, sizeof (int) * M*P, cudaMemcpyDeviceToHost);
 auto el = wtime() - time_beg;
 cout << "Time for <128,256> is: " << el << " Sec " << endl;
