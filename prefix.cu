@@ -30,7 +30,7 @@ for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; }
 int *a_d; //device storage pointers
 
 cudaMalloc ((void **) &a_d, sizeof (int) * n);
-cudaMemcpy (a_d, a, sizeof (int) * M*N, cudaMemcpyHostToDevice);
+cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
 // perform multiplication on GPU
 auto time_beg = wtime();
