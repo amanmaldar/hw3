@@ -32,15 +32,15 @@ main (int args, char **argv)
 	
   int *x_d;	//device storage pointers 
 
-  cudaMalloc ((void **) &x_d, sizeof (int) * n);
+  H_ERR(cudaMalloc ((void **) &x_d, sizeof (int) * n));
 
-  cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice);
+  H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
   
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
  // prefix_scan <<< 128,128 >>> (x_d,n);
 	cout << "done " ;
-  cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+  H_ERR(cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost));
   auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
 
