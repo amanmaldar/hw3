@@ -34,11 +34,11 @@ main (int args, char **argv)
 	
   int *x_d;	//device storage pointers 
 
-	return 0;
+	
   H_ERR(cudaMalloc ((void **) &x_d, sizeof (int) * n));
 
   H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
-  
+  return 0;
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
  // prefix_scan <<< 128,128 >>> (x_d,n);
