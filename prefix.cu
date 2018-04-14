@@ -13,7 +13,7 @@ using namespace std;
 __global__ void prefix_scan (int *x_d, int n) { 
   	int tid = threadIdx.x + blockIdx.x * blockDim.x;		// initialize with block number. Tid = 0 -> 10240
  	//__shared__ has scope of block. All threads in block has access to it.
- 	__shared__ int smem[n];   
+ 	__shared__ int smem[8];   
  	smem[tid] = x_d[tid];
  	__syncthreads(); 	//wait for all threads to copy data to smem
 
