@@ -64,10 +64,10 @@ main (int args, char **argv)
   cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice);
   
   // perform multiplication on GPU
-  time_beg = wtime();  
+  auto time_beg = wtime();  
  // vec_mult_kernel <<< 128,128 >>> (a_d, b_d, c_d, M, N,P );
   cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-  el = wtime() - time_beg;
+  auto el = wtime() - time_beg;
   cout << "Time for <128,128> is: " << el << " Sec " << endl;
 
   cout << "result is: " ;
