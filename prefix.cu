@@ -18,15 +18,18 @@ __global__ void prefix_scan (int *x, int *x_d, int n) {
  	smem[tid] = x[tid];
  	__syncthreads(); 	//wait for all threads
 
- while (tid < n) {  		
-     // Each thread in a block will operate on 1 element from row and 1 element from vector
-     // 256 threads in a block, and 256 columns as well as vector array elements = 256
-     // results are stored in smem[0->255]
-     x_d[tid] += smem[tid-1];
-     __syncthreads();
-
-     // Threads should also perform parallel reduction to sum up smem[256] vector.
-     // Block dimension is reduced to half after every for loop execution.
+	if (tid ==0){
+	smem[tid] = smem[tid+1];
+	x_d[tid] = smem[tid];
+	}
+	
+ 
+  while (tid < n) {   
+	smem[tid] += smem[tid-1];
+	  x_d[tid] = smem[tid];
+	__syncthreads();
+  }
+     
 
      tid += n;	// Jump to next block which is away by 128 blocks w.r.t. current one
  } // end while
