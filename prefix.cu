@@ -17,7 +17,7 @@ while (tid < n) {
 //smem[threadIdx.x] += smem[threadIdx.x - 1] ;
   int tmp = threadIdx.x;
   tmp--;
-  smem[threadIdx.x] += smem[tmp] ;
+  smem[threadIdx.x] = smem[tmp] ;
   a[threadIdx.x] = smem[threadIdx.x];
 __syncthreads();
 tid += 128; // Jump to next block which is away by 128 blocks w.r.t. current one
