@@ -10,7 +10,7 @@ using namespace std;
 
 // rows = M = 10240, columns = N = 256, vector b[256].  1 block operates on 1 row. Each block has 256 threads.
 // Number of blocks = 128, so increment tid by 128.
-__global__ void prefix_scan (int *x, int *x_d int n) { 
+__global__ void prefix_scan (int *x, int *x_d, int n) { 
   	int tid = threadIdx.x + blockIdx.x * blockDim.x;		// initialize with block number. Tid = 0 -> 10240
  	//__shared__ has scope of block. All threads in block has access to it.
  	__shared__ int smem[8];   
@@ -55,7 +55,7 @@ main (int args, char **argv)
   
   // perform prefix_scan on GPU
   auto time_beg = wtime();  
-  prefix_scan <<< 128,128 >>> (x_d,n );
+  prefix_scan <<< 128,128 >>> (x, x_d,n );
   cudaMemcpy (x, x_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el = wtime() - time_beg;
  // cout << "Time for <128,128> is: " << el << " Sec " << endl;
