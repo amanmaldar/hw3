@@ -12,7 +12,7 @@ __shared__ int smem[256];
 smem[threadIdx.x] = a[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid == 0) { a[0] = a[1]; continue;}
+  if (tid == 0) { a[0] = a[1]; break;}
 //smem[threadIdx.x] *= a[tid*N + threadIdx.x];
 //smem[threadIdx.x] += smem[threadIdx.x - 1] ;
   smem[threadIdx.x] = smem[2] ;
