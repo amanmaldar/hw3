@@ -35,8 +35,8 @@ main (int args, char **argv)
   int *x_d;	//device storage pointers 
 
 	
-  H_ERR(cudaMalloc ((void **) &x_d, sizeof (int) * n));
-
+  H_ERR(cudaMalloc ((void **) &x_d, sizeof (int)));
+	//cudaMalloc ((void **) &a_d, sizeof (int) * M*N);
   //H_ERR(cudaMemcpy (x_d, x, sizeof (int) * n, cudaMemcpyHostToDevice));
   
   // perform prefix_scan on GPU
