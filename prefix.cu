@@ -10,11 +10,11 @@ using namespace std;
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = threadIdx.x; // initialize with block number. Tid = 0 -> 10240
-__shared__ int smem[256];
+extern __shared__ int smem[256];
   int depth = 3;
   int d =0;
   int offset = 0;
-smem[threadIdx.x] = a_d[threadIdx.x];
+smem[tid] = a_d[tid];
 __syncthreads(); //wait for all threads
 while (tid < 4) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
@@ -22,10 +22,12 @@ while (tid < 4) {
   for (d =0; d < 1; d++){
     offset = 2^d;
     if (tid >= offset & tid < n){
-        smem[threadIdx.x] += smem[threadIdx.x-1] ;
+        //smem[threadIdx.x] += smem[threadIdx.x-1] ;
       __syncthreads();
+      smem[threadIdx.x] += smem[threadIdx.x-1] ;
         b_d[threadIdx.x] = smem[threadIdx.x];   
     }// end if
+    
     
     //if (d = depth -1) 
     
