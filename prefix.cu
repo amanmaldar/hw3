@@ -12,26 +12,23 @@ using namespace std;
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
-  int smemSize = blockDim.x*gridDim.x;
+ // int smemSize = blockDim.x*gridDim.x;
 __shared__ int smem[512];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
-  int d =0;
+  int d = 0;
   int offset = 0;
   
   while (tid < n) {
   smem[tid] = a_d[tid];   // copy datat to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid]; b_d[tid] = smem[tid]+res;}
+  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid];   __syncthreads(); b_d[tid] = smem[tid]+res;}
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
-    if (tid%blockDim.x >= offset){
-  
+    if (tid%blockDim.x >= offset){  
      
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
-      __syncthreads();
-       // b_d[tid] = smem[tid];  // add result from previous block to each element  
-        
+      __syncthreads();      
        
     }// end if
     offset *=2;
@@ -63,7 +60,6 @@ main (int args, char **argv)
   //int n = 16;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
-
 
   int *a= (int *)malloc(sizeof(int)*n);
   int *b= (int *)malloc(sizeof(int)*n);
