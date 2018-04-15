@@ -27,11 +27,12 @@ while (tid < n) {
       smem[tid] = smem[tid] + smem[tid-offset] + res ;           //after writing to smem do synchronize
       __syncthreads();
         b_d[tid] = smem[tid];  
-        if(tid%blockDim.x == 7) {res = smem[tid];}  // if last thread in block save cout
+        
        
     }// end if
     offset *=2;
    } // end for 
+  if(tid%blockDim.x == 7) {res = smem[tid];}  // if last thread in block save cout
   tid += n;
 } // end while (tid < n)
 } // end kernel function
