@@ -7,25 +7,25 @@
 #include "helper/wtime.h"
 using namespace std;
 
-/*
-__global__ void vec_mult_kernel (int *a, int n) {
+
+__global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
-smem[threadIdx.x] = a[threadIdx.x];
+smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid == 0) { smem[0] = a[0]; a[threadIdx.x] = smem[threadIdx.x];  break;}
+  if (tid == 0) { smem[0] = a_d[0]; a[threadIdx.x] = smem[threadIdx.x];  break;}
 
   for (int depth = 0; depth < 3; depth++)
 
-  smem[threadIdx.x] += a[threadIdx.x-1] ;
-  a[threadIdx.x] = smem[threadIdx.x];
+  smem[threadIdx.x] += a_d[threadIdx.x-1] ;
+  b_d[threadIdx.x] = smem[threadIdx.x];
 __syncthreads();
 tid += 128; // Jump to next block which is away by 128 blocks w.r.t. current one
 } // end while
 } // end kernel function
 
-*/
+
 
 
 __global__ void scanNew(int *g_odata, int *g_idata, int n)
@@ -72,8 +72,8 @@ cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
 // perform multiplication on GPU
 auto time_beg = wtime();
-//vec_mult_kernel <<< 128,256 >>> (a_d, n );
-scanNew <<< 128,256 >>> (b_d, a_d, n);
+vec_mult_kernel <<< 128,256 >>> (b_d,a_d, n );
+//scanNew <<< 128,256 >>> (b_d, a_d, n);
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   cout << "result is: ";
 for (int i = 0; i < n; i++) {  cout << b[i] << " ";}
