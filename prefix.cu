@@ -25,7 +25,7 @@ while (tid < n) {
     if (tid%blockDim.x >= offset){
   
      
-      smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
+      smem[tid] += smem[tid-1] ;           //after writing to smem do synchronize
       __syncthreads();
        // b_d[tid] = smem[tid];  // add result from previous block to each element  
         
@@ -33,7 +33,7 @@ while (tid < n) {
     }// end if
     offset *=2;
    } // end for 
-   b_d[tid] = smem[tid] + res;  // save result to b_d after adding res to it;
+   b_d[tid] = smem[tid]; // + res; // add this part  // save result to b_d after adding res to it;
   if(tid%blockDim.x == blockDim.x-1) {res = b_d[tid];}  // if last thread in block save cout
   __syncthreads();
   tid += blockDim.x;
