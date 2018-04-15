@@ -18,30 +18,16 @@ smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[threadIdx.x] = smem[threadIdx.x];  break;}
-
   
   for (d =0; d < depth; d++){
     offset = 2^d;
     if (tid >= offset){
         smem[threadIdx.x] += smem[threadIdx.x-1] ;
-        b_d[threadIdx.x] = smem[threadIdx.x];
-      __syncthreads();
+        b_d[threadIdx.x] = smem[threadIdx.x];   
     }// end if
-    tid += 8;
+    __syncthreads();
+    if (d = depth -1) {tid += 8};
   } // end for 
-  
-  /*
-  while (d < depth){
-      if (tid > 2^d){
-        for (int k = 2^d; k<n; k++){
-
-        smem[threadIdx.x] += a_d[threadIdx.x-1] ;
-        b_d[threadIdx.x] = smem[threadIdx.x];
-      __syncthreads();
-          d++;
-       } // for end
-     } // if and
-  } // end  while (int d < depth)*/
 } // end while (tid < n)
 } // end kernel function
 
