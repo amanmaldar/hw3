@@ -19,11 +19,11 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   int offset = 0;
   
   while (tid < n) {
-  smem[tid%128] = a_d[blockIdx.x*127+threadIdx.x];   // copy data to shared memory
+  smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%blockDim.x == 0 ) { smem[tid%128] = a_d[blockIdx.x*127+threadIdx.x];   
-                             __syncthreads(); b_d[blockIdx.x*127+threadIdx.x] = smem[tid%128]+res;}
+  if (tid%blockDim.x == 0 ) { smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   
+                             __syncthreads(); b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;}
 
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
@@ -36,9 +36,9 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
     }// end if
     offset *=2;
    } // end for 
-   b_d[blockIdx.x*127+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
+   b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
       __syncthreads();
-  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*127+threadIdx.x];}  // if last thread in block save cout
+  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*128+threadIdx.x];}  // if last thread in block save cout
   tid += blockDim.x;
 
 } // end while (tid < n)
