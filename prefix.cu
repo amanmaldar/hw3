@@ -39,7 +39,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
     
     if (tid%blockDim.x >= offset){  
      
-      smem[tid%128] += smem[tid%128-offset] ;           //after writing to smem do synchronize
+      smem[threadIdx.x] += smem[threadIdx.x-offset] ;           //after writing to smem do synchronize
       __syncthreads();      
        
     }// end if
