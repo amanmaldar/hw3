@@ -26,7 +26,8 @@ while (tid < n) {
         b_d[threadIdx.x] = smem[threadIdx.x];   
     }// end if
     __syncthreads();
-    if (d = depth -1) {tid += 8;}
+    //if (d = depth -1) 
+    {tid += 8;}
   } // end for 
 } // end while (tid < n)
 } // end kernel function
