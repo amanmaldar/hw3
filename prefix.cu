@@ -59,7 +59,8 @@ main (int args, char **argv)
 {
   int threadsInBlock = 8;
   int numberOfBlocks = 8;
-  int n = threadsInBlock*numberOfBlocks;
+  //int n = threadsInBlock*numberOfBlocks;
+  int n = 16;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -67,7 +68,7 @@ main (int args, char **argv)
   int *a= (int *)malloc(sizeof(int)*n);
   int *b= (int *)malloc(sizeof(int)*n);
   
-  cout << "array is: ";
+  cout << "array is: "; 
   for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}   cout << endl;
   
   auto time_beg = wtime();
