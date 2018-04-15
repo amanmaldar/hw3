@@ -23,11 +23,11 @@ while (tid < n) {
   for (d =0; d < 3; d++){
     
     if (tid >= offset){
-        //smem[threadIdx.x] += smem[threadIdx.x-1] ;
-      __syncthreads();
+  
       smem[tid] += smem[tid-1] ;
+      __syncthreads();
         b_d[tid] = smem[tid];  
-       __syncthreads();
+       
     }// end if
     offset *=2;
    } // end for 
