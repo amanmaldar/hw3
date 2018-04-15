@@ -24,7 +24,7 @@ while (tid < n) {
     
     if (tid >= offset){
   
-      smem[tid] += smem[tid-1] ;
+      smem[tid] += smem[tid-offset] ;
       __syncthreads();
         b_d[tid] = smem[tid];  
        
