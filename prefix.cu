@@ -60,7 +60,7 @@ main (int args, char **argv)
   int threadsInBlock = 128;
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 2000000;
+  int n = 8;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -77,7 +77,7 @@ main (int args, char **argv)
   
   cout << "CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { //cout << b_cpu[i] << " ";   
+  { cout << b_cpu[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -96,7 +96,7 @@ main (int args, char **argv)
   cout << "GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     //assert(b[i]== b_cpu[i]);   
-    //cout << b[i] << " ";  
+    cout << b[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
