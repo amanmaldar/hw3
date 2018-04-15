@@ -19,8 +19,9 @@ __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
   //if (tid == 1) { smem[1] = 1001; b_d[1] = smem[0]; tid += 8; break;}
-  for (d =0; d < 1; ++d){
-    offset = 1; //1->2->4
+  offset = 1; //1->2->4
+  for (d =0; d < 3; d++){
+    
     if (tid >= offset){
         //smem[threadIdx.x] += smem[threadIdx.x-1] ;
       __syncthreads();
@@ -28,11 +29,8 @@ while (tid < n) {
         b_d[tid] = smem[tid];  
        __syncthreads();
     }// end if
-    
-    
-    //if (d = depth -1) 
-    
-  } // end for 
+    offset *=2;
+   } // end for 
   tid += 8;
 } // end while (tid < n)
 } // end kernel function
