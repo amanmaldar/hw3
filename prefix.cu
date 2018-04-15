@@ -11,17 +11,19 @@ using namespace std;
 
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
+  
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
  // int smemSize = blockDim.x*gridDim.x;
-__shared__ int smem[512];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
+__shared__ int smem[16384];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
   int d = 0;
   int offset = 0;
   
   while (tid < n) {
-  smem[tid] = a_d[tid];   // copy datat to shared memory
+  smem[tid] = a_d[tid];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
   if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid];   __syncthreads(); b_d[tid] = smem[tid]+res;}
+
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
@@ -54,8 +56,8 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 8;
-  int numberOfBlocks = 8;
+  int threadsInBlock = 128;
+  int numberOfBlocks = 128;
   int n = threadsInBlock*numberOfBlocks;
   //int n = 16;
   int b_cpu[n];
@@ -73,7 +75,7 @@ main (int args, char **argv)
   
   cout << "CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { cout << b_cpu[i] << " ";   
+  { //cout << b_cpu[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -91,7 +93,7 @@ main (int args, char **argv)
   cout << "GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     //assert(b[i]== b_cpu[i]);   
-    cout << b[i] << " ";  
+    //cout << b[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
