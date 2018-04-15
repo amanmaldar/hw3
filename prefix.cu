@@ -14,7 +14,7 @@ __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
  // int smemSize = blockDim.x*gridDim.x;
-__shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
+__shared__ int smem[1024];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
   int d = 0;
   int offset = 0;
   
@@ -57,8 +57,8 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 2048;
-  int numberOfBlocks = 2048;
+  int threadsInBlock = 20000;
+  int numberOfBlocks = 1024;
   int n = threadsInBlock*numberOfBlocks;
   //int n = 16;
   int b_cpu[n];
