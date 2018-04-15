@@ -18,7 +18,7 @@ __shared__ int smem[256];
 smem[tid] = a_d[tid];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid]+res; b_d[tid] = smem[tid]; __syncthreads(); tid += blockDim.x ; break;}
+  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid]; b_d[tid] = smem[tid];  tid += blockDim.x ; break;}
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
@@ -26,7 +26,7 @@ while (tid < n) {
   
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
-        b_d[tid] = smem[tid];  
+        b_d[tid] = smem[tid] + res;  // add result from previous block to each element  
         
        
     }// end if
