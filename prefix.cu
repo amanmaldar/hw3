@@ -16,7 +16,7 @@ __shared__ int smem[256];
   int offset = 0;
 smem[tid] = a_d[tid];
 __syncthreads(); //wait for all threads
-while (tid < 4) {
+while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
   
   for (d =0; d < 1; d++){
