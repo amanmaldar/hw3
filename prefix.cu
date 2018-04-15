@@ -24,6 +24,12 @@ while (tid < n) {
     
     if (tid%blockDim.x >= offset){
   
+       if (tid == 9) {smem[tid]+=1000;}
+       if (tid == 10) {smem[tid]+=1000;}
+       if (tid == 11) {smem[tid]+=1000;}
+       if (tid == 12) {smem[tid]+=1000;}
+       if (tid == 13) {smem[tid]+=1000;}
+       if (tid == 14) {smem[tid]+=1000;}
       if (tid == 15) {smem[tid]+=1000;}
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
