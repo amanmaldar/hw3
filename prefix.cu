@@ -84,7 +84,7 @@ cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 auto time_beg = wtime();
 vec_mult_kernel <<< 2,8 >>> (b_d,a_d, n );
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-  cout << "result is: ";
+  cout << "gpu result is: ";
 for (int i = 0; i < n; i++) {  
   assert(b[i]== b_cpu[i]);
   cout << b[i] << " ";
