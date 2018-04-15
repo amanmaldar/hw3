@@ -1,4 +1,6 @@
-// matrix vector multiplication with parallel reduction
+// This program is limited to 16 array indexes only.
+// BlockDimx= 8 and the GridDimX=2. This is a simple program to start with.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
