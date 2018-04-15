@@ -24,7 +24,7 @@ while (tid < n) {
     
     if (tid%blockDim.x >= offset){
   
-      smem[tid] = smem[tid] + smem[tid-offset] + res ;           //after writing to smem do synchronize
+      smem[tid] = smem[tid] + smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
         b_d[tid] = smem[tid];  
         
