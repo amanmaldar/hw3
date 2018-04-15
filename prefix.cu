@@ -59,8 +59,8 @@ main (int args, char **argv)
 {
   int threadsInBlock = 8;
   int numberOfBlocks = 8;
-  //int n = threadsInBlock*numberOfBlocks;
-  int n = 16;
+  int n = threadsInBlock*numberOfBlocks;
+  //int n = 16;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
