@@ -46,9 +46,7 @@ __shared__ int smem[256];
 void fillPrefixSum(int arr[], int n, int prefixSum[])
 {
     prefixSum[0] = arr[0];
-
-    // Adding present element 
-    // with previous element
+    // Adding present element with previous element
     for (int i = 1; i < n; i++)
         prefixSum[i] = prefixSum[i-1] + arr[i];
 }
@@ -58,39 +56,38 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-// configure matrix dimensions
-int n = 16;
-int *a= (int *)malloc(sizeof(int)*n);
-int *b= (int *)malloc(sizeof(int)*n);
-// Initialize matrix A and B
-  cout << "array is: ";
-for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}
-  cout << endl;
+  int n = 16;
   int b_cpu[n];
+
+  int *a= (int *)malloc(sizeof(int)*n);
+  int *b= (int *)malloc(sizeof(int)*n);
+  
+  cout << "array is: ";
+  for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}   cout << endl;
+  
+  auto time_beg = wtime();
   fillPrefixSum(a, n, b_cpu);
-  cout << "cpu result is: ";
-for (int i = 0; i < n; i++) {  
+  auto el_cpu = wtime() - time_beg;
   
-  cout << b_cpu[i] << " ";
-  }cout << endl;
+  cout << "CPU Result is: "; 
+  for (int i = 0; i < n; i++) { cout << b_cpu[i] << " ";   } cout << endl;
   
-int *a_d, *b_d; //device storage pointers
+  int *a_d, *b_d; //device storage pointers
 
-cudaMalloc ((void **) &a_d, sizeof (int) * n);
-cudaMalloc ((void **) &b_d, sizeof (int) * n);
+  cudaMalloc ((void **) &a_d, sizeof (int) * n);
+  cudaMalloc ((void **) &b_d, sizeof (int) * n);
 
-cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
+  cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
-auto time_beg = wtime();
-vec_mult_kernel <<< 2,8 >>> (b_d,a_d, n );
-cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-  cout << "gpu result is: ";
-for (int i = 0; i < n; i++) {  
-  assert(b[i]== b_cpu[i]);
-  cout << b[i] << " ";
-  }
-  cout << endl;
-auto el = wtime() - time_beg;
-cout << "Time is: " << el << " Sec " << endl;
-return 0;
+  time_beg = wtime();
+  vec_mult_kernel <<< 2,8 >>> (b_d,a_d, n );
+  cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+  auto el_gpu = wtime() - time_beg;
+
+  cout << "GPU Result is: ";
+  for (int i = 0; i < n; i++) {    assert(b[i]== b_cpu[i]);   cout << b[i] << " ";  } cout << endl;
+
+  cout << "CPU time is: " << el_cpu << " Sec " << endl;
+  cout << "GPU time is: " << el_gpu << " Sec " << endl;
+  return 0;
 }
