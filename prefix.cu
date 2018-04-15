@@ -70,7 +70,9 @@ main (int args, char **argv)
   auto el_cpu = wtime() - time_beg;
   
   cout << "CPU Result is: "; 
-  for (int i = 0; i < n; i++) { cout << b_cpu[i] << " ";   } cout << endl;
+  for (int i = 0; i < n; i++) 
+  { //cout << b_cpu[i] << " ";   
+  } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
 
@@ -80,14 +82,17 @@ main (int args, char **argv)
   cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  vec_mult_kernel <<< 2,8 >>> (b_d,a_d, n );
+  vec_mult_kernel <<< 2,512 >>> (b_d,a_d, n );
   cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el_gpu = wtime() - time_beg;
 
   cout << "GPU Result is: ";
-  for (int i = 0; i < n; i++) {    assert(b[i]== b_cpu[i]);   cout << b[i] << " ";  } cout << endl;
+  for (int i = 0; i < n; i++) {    
+    assert(b[i]== b_cpu[i]);   
+    //cout << b[i] << " ";  
+  } cout << endl;
 
-  cout << "CPU time is: " << el_cpu << " Sec " << endl;
-  cout << "GPU time is: " << el_gpu << " Sec " << endl;
+  cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
+  cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl;
   return 0;
 }
