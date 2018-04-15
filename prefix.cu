@@ -18,7 +18,7 @@ __shared__ int smem[256];
 smem[tid] = a_d[tid];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid%blockDim.x == 0 ) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
+  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid]+res; b_d[tid] = smem[tid]; tid += blockDim.x ; break;}
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
@@ -32,8 +32,8 @@ while (tid < n) {
     }// end if
     offset *=2;
    } // end for 
-  if(tid%blockDim.x == 7) {res = smem[tid];}  // if last thread in block save cout
-  tid += n;
+  if(tid%blockDim.x == blockDim.x-1) {res = smem[tid];}  // if last thread in block save cout
+  tid += blockDim.x;
 } // end while (tid < n)
 } // end kernel function
 
