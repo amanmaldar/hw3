@@ -43,6 +43,17 @@ __shared__ int smem[256];
 } // end kernel function
 
 
+void fillPrefixSum(int arr[], int n, int prefixSum[])
+{
+    prefixSum[0] = arr[0];
+
+    // Adding present element 
+    // with previous element
+    for (int i = 1; i < n; i++)
+        prefixSum[i] = prefixSum[i-1] + arr[i];
+}
+
+
 
 int
 main (int args, char **argv)
@@ -55,6 +66,9 @@ int *b= (int *)malloc(sizeof(int)*n);
   cout << "array is: ";
 for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}
   cout << endl;
+  int b_cpu[n];
+  fillPrefixSum(a, n, b_cpu);
+  
 int *a_d, *b_d; //device storage pointers
 
 cudaMalloc ((void **) &a_d, sizeof (int) * n);
@@ -62,12 +76,14 @@ cudaMalloc ((void **) &b_d, sizeof (int) * n);
 
 cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
-// perform multiplication on GPU
 auto time_beg = wtime();
 vec_mult_kernel <<< 2,8 >>> (b_d,a_d, n );
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   cout << "result is: ";
-for (int i = 0; i < n; i++) {  cout << b[i] << " ";}
+for (int i = 0; i < n; i++) {  
+  assert(b[i]== b_cpu[i]);
+  cout << b[i] << " ";
+  }
   cout << endl;
 auto el = wtime() - time_beg;
 cout << "Time is: " << el << " Sec " << endl;
