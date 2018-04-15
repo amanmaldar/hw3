@@ -20,7 +20,7 @@ while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
   //if (tid == 1) { smem[1] = 1001; b_d[1] = smem[0]; tid += 8; break;}
   offset = 1; //1->2->4
-  for (d =0; d < 3; d++){
+  for (d =0; d < 2; d++){
     
     if (tid >= offset){
   
