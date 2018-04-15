@@ -27,11 +27,11 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   int d = 0;
   int offset = 0;
   
-    smem[threadIdx.x] = a_d[tid];   // copy data to shared memory
-  __syncthreads(); //wait for all threads
+
     
   while (tid < n) {
-  
+      smem[threadIdx.x] = a_d[tid];   // copy data to shared memory
+  __syncthreads(); //wait for all threads
 
   if (tid%128 == 0 ) { smem[0] = smem[0] + res;   //** add previos result to telement zero
                               b_d[blockIdx.x*128] = smem[0]; tid += 128; break;}  
