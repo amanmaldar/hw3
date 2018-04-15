@@ -6,7 +6,7 @@
 #include <chrono>
 #include "helper/wtime.h"
 using namespace std;
-  __device__ int cout=0;  //result from one block to next block
+  __device__ int carry=0;  //result from one block to next block
 
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
@@ -24,10 +24,10 @@ while (tid < n) {
     
     if (tid >= offset){
   
-      smem[tid] += smem[tid-offset] + cout ;           //after writing to smem do synchronize
+      smem[tid] += smem[tid-offset] + carry ;           //after writing to smem do synchronize
       __syncthreads();
         b_d[tid] = smem[tid];  
-        if(tid%blockDim.x == blockDim.x-1) {cout = smem[tid];}  // if last thread in block save cout
+        if(tid%blockDim.x == blockDim.x-1) {carry = smem[tid];}  // if last thread in block save cout
        
     }// end if
     offset *=2;
