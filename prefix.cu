@@ -14,29 +14,30 @@ __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
  // int smemSize = blockDim.x*gridDim.x;
-__shared__ int smem[16384];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
+__shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
   int d = 0;
   int offset = 0;
   
   while (tid < n) {
-  smem[tid] = a_d[tid];   // copy data to shared memory
+  smem[tid%128] = a_d[blockIdx.x*127+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%blockDim.x == 0 ) { smem[tid] = a_d[tid];   __syncthreads(); b_d[tid] = smem[tid]+res;}
+  if (tid%blockDim.x == 0 ) { smem[tid%128] = a_d[blockIdx.x*127+threadIdx.x];   
+                             __syncthreads(); b_d[blockIdx.x*127+threadIdx.x] = smem[tid%128]+res;}
 
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
     if (tid%blockDim.x >= offset){  
      
-      smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
+      smem[tid%128] += smem[tid%128-offset] ;           //after writing to smem do synchronize
       __syncthreads();      
        
     }// end if
     offset *=2;
    } // end for 
-   b_d[tid] = smem[tid] + res; // add this part  // save result to b_d after adding res to it;
-  if(tid%blockDim.x == blockDim.x-1) {res = b_d[tid];}  // if last thread in block save cout
+   b_d[blockIdx.x*127+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
+  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*127+threadIdx.x];}  // if last thread in block save cout
   __syncthreads();
   tid += blockDim.x;
 } // end while (tid < n)
