@@ -30,9 +30,7 @@ __shared__ int smem[256];
   
      
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
-      __syncthreads();
-       // b_d[tid] = smem[tid];  // add result from previous block to each element  
-        
+      __syncthreads();      
        
     }// end if
     offset *=2;
