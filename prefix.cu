@@ -18,8 +18,8 @@ smem[tid] = a_d[tid];
 __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
-  if (tid == 1) { smem[1] = 1001; b_d[1] = smem[0]; tid += 8; break;}
-  for (d =0; d < 1; d++){
+  //if (tid == 1) { smem[1] = 1001; b_d[1] = smem[0]; tid += 8; break;}
+  for (d =0; d < 1; ){
     offset = 2^d;
     if (tid >= offset){
         //smem[threadIdx.x] += smem[threadIdx.x-1] ;
