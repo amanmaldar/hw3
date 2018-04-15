@@ -21,7 +21,7 @@ while (tid < n) {
   
   for (d =0; d < 1; d++){
     offset = 2^d;
-    if (tid >= offset & tid < n){
+    if (tid >= offset & tid < n -1){
         smem[threadIdx.x] += smem[threadIdx.x-offset] ;
         b_d[threadIdx.x] = smem[threadIdx.x];   
     }// end if
