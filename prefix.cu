@@ -37,10 +37,9 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
     offset *=2;
    } // end for 
    b_d[blockIdx.x*127+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
-  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*127+threadIdx.x];}  // if last thread in block save cout
-  __syncthreads();
-  tid += blockDim.x;
       __syncthreads();
+  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*127+threadIdx.x];}  // if last thread in block save cout
+  tid += blockDim.x;
 
 } // end while (tid < n)
 } // end kernel function
