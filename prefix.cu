@@ -47,7 +47,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
    } // end for 
    b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
-  if(tid%128 == 127) {res = b_d[blockIdx.x*128+127];      __syncthreads(); }  // if last thread in block save cout
+  if(tid%128 == 127) {res = smem[127];      __syncthreads(); }  // if last thread in block save cout
   tid += 128;
 
 } // end while (tid < n)
