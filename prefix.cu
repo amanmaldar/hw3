@@ -10,11 +10,10 @@ using namespace std;
   __device__ int res;  //result from one block to next block
 
 
-__global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
+__global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
   int smemSize = blockDim.x*gridDim.x;
 __shared__ int smem[512];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
-  int depth = log2(blockDim.x);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
   int d =0;
   int offset = 0;
   
@@ -62,6 +61,8 @@ main (int args, char **argv)
   int numberOfBlocks = 8;
   int n = threadsInBlock*numberOfBlocks;
   int b_cpu[n];
+  int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
+
 
   int *a= (int *)malloc(sizeof(int)*n);
   int *b= (int *)malloc(sizeof(int)*n);
@@ -86,7 +87,7 @@ main (int args, char **argv)
   cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n );
+  vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
   cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el_gpu = wtime() - time_beg;
 
