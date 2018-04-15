@@ -22,8 +22,8 @@ while (tid < n) {
   
   for (d =0; d < depth; d++){
     offset = 2^d;
-    if (tid > offset){
-        smem[threadIdx.x] += a_d[threadIdx.x-1] ;
+    if (tid >= offset){
+        smem[threadIdx.x] += smem[threadIdx.x-1] ;
         b_d[threadIdx.x] = smem[threadIdx.x];
       __syncthreads();
     }// end if
