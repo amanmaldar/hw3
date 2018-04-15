@@ -44,7 +44,7 @@ __global__ void scanNew(int *g_odata, int *g_idata, int n)
  if (thid >= offset)
  temp[pout*n+thid] += temp[pin*n+thid - offset];
  else
- temp[pout*n+thid] = temp[pin*n+thid-1];
+ temp[pout*n+thid] = temp[pin*n+thid];
  __syncthreads();
  }
  g_odata[thid] = temp[pout*n+thid]; // write output
