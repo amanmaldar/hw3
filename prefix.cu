@@ -28,10 +28,10 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   int offset = 0;
   
   while (tid < n) {
-  smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
+  smem[threadIdx.x] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%128 == 0 ) { smem[0] = a_d[blockIdx.x*128+ res];   //** add previos result to telement zero
+  if (tid%128 == 0 ) { smem[0] = smem[0] + smem[1] + res;   //** add previos result to telement zero
                               b_d[blockIdx.x*128] = smem[0];}  
 
   offset = 1; //1->2->4
@@ -45,7 +45,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
     }// end if
     offset *=2;
    } // end for 
-   b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
+   b_d[blockIdx.x*128+threadIdx.x] = smem[threadIdx.x]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
   if(tid%128 == 127) {res = smem[127];      __syncthreads(); }  // if last thread in block save cout
   tid += 128;
