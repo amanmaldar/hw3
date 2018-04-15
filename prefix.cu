@@ -25,7 +25,8 @@ while (tid < n) {
         //smem[threadIdx.x] += smem[threadIdx.x-1] ;
       __syncthreads();
       smem[tid] += smem[tid-1] ;
-        b_d[tid] = smem[tid];   
+        b_d[tid] = smem[tid];  
+       __syncthreads();
     }// end if
     
     
