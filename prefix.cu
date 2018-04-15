@@ -7,7 +7,7 @@
 #include <math.h>
 #include "helper/wtime.h"
 using namespace std;
-  __device__ int res;  //result from one block to next block
+  __device__ int res=0;  //result from one block to next block
 
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
@@ -22,11 +22,11 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%blockDim.x == 0 ) { smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   
-                             __syncthreads(); b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;}
+  if (tid%128 == 0 ) { smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   
+                              b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;}
 
   offset = 1; //1->2->4
-  for (d =0; d < depth ; d++){                        // depth = 3
+  for (d =0; d < 7 ; d++){                        // depth = 3
     
     if (tid%blockDim.x >= offset){  
      
@@ -38,8 +38,8 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
    } // end for 
    b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
       __syncthreads();
-  if(tid%blockDim.x == blockDim.x-1) {res = b_d[blockIdx.x*128+threadIdx.x];}  // if last thread in block save cout
-  tid += blockDim.x;
+  if(tid%128 == 127) {res = b_d[blockIdx.x*128+127];}  // if last thread in block save cout
+  tid += 128;
 
 } // end while (tid < n)
 } // end kernel function
