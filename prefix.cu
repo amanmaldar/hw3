@@ -48,7 +48,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
    b_d[tid] = smem[threadIdx.x]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
   if(tid == 127) {res = smem[127];     }  // if last thread in block save cout
-  tid += 128;
+  tid += gridDim.x*blockDim.x;
 
 } // end while (tid < n)
 } // end kernel function
