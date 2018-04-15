@@ -45,7 +45,7 @@ int
 main (int args, char **argv)
 {
 // configure matrix dimensions
-int n = 16;
+int n = 8;
 int *a= (int *)malloc(sizeof(int)*n);
 int *b= (int *)malloc(sizeof(int)*n);
 // Initialize matrix A and B
