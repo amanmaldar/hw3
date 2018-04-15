@@ -11,6 +11,7 @@ using namespace std;
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
+  __device__ int cout=0;  //result from one block to next block
   int depth = 3;    //log(blockDim.x) = log(8) = 3
   int d =0;
   int offset = 0;
@@ -23,9 +24,10 @@ while (tid < n) {
     
     if (tid >= offset){
   
-      smem[tid] += smem[tid-offset] ;
+      smem[tid] += smem[tid-offset] + cout ;           //after writing to smem do synchronize
       __syncthreads();
         b_d[tid] = smem[tid];  
+        if(tid%blockDim.x == blockDim.x-1) {cout = smem[tid];}  // if last thread in block save cout
        
     }// end if
     offset *=2;
