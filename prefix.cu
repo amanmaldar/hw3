@@ -20,17 +20,11 @@ __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid%blockDim.x == 0 ) { b_d[tid] = smem[tid]+res;  tid += blockDim.x ; break;}
   offset = 1; //1->2->4
-  for (d =0; d < depth ; d++){                        // depth = 3
+  for (d =0; d < 1 ; d++){                        // depth = 3
     
     if (tid%blockDim.x >= offset){
   
-       if (tid == 9) {smem[tid]+=1000;}
-       if (tid == 10) {smem[tid]+=1000;}
-       if (tid == 11) {smem[tid]+=1000;}
-       if (tid == 12) {smem[tid]+=1000;}
-       if (tid == 13) {smem[tid]+=1000;}
-       if (tid == 14) {smem[tid]+=1000;}
-      if (tid == 15) {smem[tid]+=1000;}
+     
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
        // b_d[tid] = smem[tid];  // add result from previous block to each element  
