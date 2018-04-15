@@ -56,7 +56,7 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-  int n = 16;
+  int n = 32;
   int b_cpu[n];
 
   int *a= (int *)malloc(sizeof(int)*n);
@@ -82,7 +82,7 @@ main (int args, char **argv)
   cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  vec_mult_kernel <<< 2,512 >>> (b_d,a_d, n );
+  vec_mult_kernel <<< 1,32 >>> (b_d,a_d, n );
   cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el_gpu = wtime() - time_beg;
 
