@@ -12,7 +12,7 @@ using namespace std;
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[512];
-  int depth = 3;    //log(blockDim.x) = log(8) = 3
+  int depth = 5;    //log(blockDim.x) = log(8) = 3
   int d =0;
   int offset = 0;
   
