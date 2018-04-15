@@ -7,7 +7,16 @@
 #include <math.h>
 #include "helper/wtime.h"
 using namespace std;
-  __device__ int res=0;  //result from one block to next block
+
+void fillPrefixSum(int arr[], int n, int prefixSum[])
+{
+    prefixSum[0] = arr[0];
+    // Adding present element with previous element
+    for (int i = 1; i < n; i++)
+        prefixSum[i] = prefixSum[i-1] + arr[i];
+}
+
+__device__ int res=0;  //result from one block to next block
 
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
@@ -38,21 +47,11 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
    } // end for 
    b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
       __syncthreads();
-  if(tid%128 == 127) {res = b_d[blockIdx.x*128+127];}  // if last thread in block save cout
+  if(tid%128 == 127) {res = b_d[blockIdx.x*128+127];      __syncthreads(); }  // if last thread in block save cout
   tid += 128;
 
 } // end while (tid < n)
 } // end kernel function
-
-
-void fillPrefixSum(int arr[], int n, int prefixSum[])
-{
-    prefixSum[0] = arr[0];
-    // Adding present element with previous element
-    for (int i = 1; i < n; i++)
-        prefixSum[i] = prefixSum[i-1] + arr[i];
-}
-
 
 
 int
@@ -68,7 +67,7 @@ main (int args, char **argv)
   int *a= (int *)malloc(sizeof(int)*n);
   int *b= (int *)malloc(sizeof(int)*n);
   
-  cout << "array is: "; 
+  cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; //cout << a[i] << " ";
                               }   cout << endl;
   
@@ -76,7 +75,7 @@ main (int args, char **argv)
   fillPrefixSum(a, n, b_cpu);
   auto el_cpu = wtime() - time_beg;
   
-  cout << "CPU Result is: "; 
+  cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
   { cout << b_cpu[i] << " ";   
   } cout << endl;
@@ -94,7 +93,7 @@ main (int args, char **argv)
   cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
 
 
-  cout << "GPU Result is: ";
+  cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     //assert(b[i]== b_cpu[i]);   
     cout << b[i] << " ";  
