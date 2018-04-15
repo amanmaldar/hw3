@@ -13,11 +13,24 @@ int tid = threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
   int depth = 3;
   int d =0;
+  int offset = 0;
 smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[threadIdx.x] = smem[threadIdx.x];  break;}
 
+  
+  for (d =0; d < depth; d++){
+    offset = 2^d;
+    if (tid > offset){
+        smem[threadIdx.x] += a_d[threadIdx.x-1] ;
+        b_d[threadIdx.x] = smem[threadIdx.x];
+      __syncthreads();
+    }// end if
+    tid += 8;
+  } // end for 
+  
+  /*
   while (d < depth){
       if (tid > 2^d){
         for (int k = 2^d; k<n; k++){
@@ -28,7 +41,7 @@ while (tid < n) {
           d++;
        } // for end
      } // if and
-  } // end  while (int d < depth)
+  } // end  while (int d < depth)*/
 } // end while (tid < n)
 } // end kernel function
 
