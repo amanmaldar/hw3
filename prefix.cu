@@ -50,7 +50,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
    b_d[tid] = smem[threadIdx.x]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
   if(tid == 127) {res = smem[127];     }  // if last thread in block save cout
-  tid += 128;
+  //tid += 128;
 
 } // end while (tid < n)
 } // end kernel function
