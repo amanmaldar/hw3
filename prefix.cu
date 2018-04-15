@@ -19,7 +19,7 @@ __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
   
-  for (d =0; d < depth; d++){
+  for (d =0; d < 1; d++){
     offset = 2^d;
     if (tid >= offset & tid < n){
         smem[threadIdx.x] += smem[threadIdx.x-offset] ;
