@@ -17,20 +17,18 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 }
 
 __device__ int res=0;  //result from one block to next block
-
+__device__ int smem[256]
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
  // int smemSize = blockDim.x*gridDim.x;
-__shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
+//__shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
   int d = 0;
   int offset = 0;
-  
-
     
   while (tid < n) {
-      smem[threadIdx.x] = a_d[tid];   // copy data to shared memory
+      smem[tid] = a_d[tid];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
   if (tid%128 == 0 ) { smem[0] = smem[0] + res;   //** add previos result to telement zero
@@ -50,7 +48,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
    b_d[tid] = smem[threadIdx.x]; //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
   if(tid == 127) {res = smem[127];     }  // if last thread in block save cout
-  //tid += 128;
+  tid += 128;
 
 } // end while (tid < n)
 } // end kernel function
@@ -62,7 +60,7 @@ main (int args, char **argv)
   int threadsInBlock = 128;
   int numberOfBlocks = 1;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 256;
+  int n = 128;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
