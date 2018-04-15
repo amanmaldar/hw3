@@ -6,7 +6,7 @@
 #include <chrono>
 #include "helper/wtime.h"
 using namespace std;
-  __device__ int res=0;  //result from one block to next block
+  __device__ int res;  //result from one block to next block
 
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
