@@ -11,18 +11,23 @@ using namespace std;
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
+  depth = 3;
 smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
   if (tid == 0) { smem[0] = a_d[0]; b_d[threadIdx.x] = smem[threadIdx.x];  break;}
 
-  for (int depth = 0; depth < 3; depth++)
+  while (int d < depth){
+      if (tid > 2^d){
+        for (int k = 2^d; k<n; k++){
 
-  smem[threadIdx.x] += a_d[threadIdx.x-1] ;
-  b_d[threadIdx.x] = smem[threadIdx.x];
-__syncthreads();
-tid += 128; // Jump to next block which is away by 128 blocks w.r.t. current one
-} // end while
+        smem[threadIdx.x] += a_d[threadIdx.x-1] ;
+        b_d[threadIdx.x] = smem[threadIdx.x];
+      __syncthreads();
+       } // for end
+     } // if and
+  } // end  while (int d < depth)
+} // end while (tid < n)
 } // end kernel function
 
 
