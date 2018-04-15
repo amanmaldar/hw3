@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <chrono>
+#include <math.h>
 #include "helper/wtime.h"
 using namespace std;
   __device__ int res;  //result from one block to next block
@@ -11,8 +12,8 @@ using namespace std;
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
-__shared__ int smem[512];
-  int depth = 9;    //log(blockDim.x) = log(8) = 3
+__shared__ int smem[blockDim.x*gridDim.x];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
+  int depth = log2(blockDim.x);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
   int d =0;
   int offset = 0;
   
@@ -56,7 +57,9 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-  int n = 512;
+  int threadsInBlock = 8;
+  int numberOfBlocks = 8;
+  int n = threadsInBlock*numberOfBlocks;
   int b_cpu[n];
 
   int *a= (int *)malloc(sizeof(int)*n);
@@ -82,13 +85,13 @@ main (int args, char **argv)
   cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  vec_mult_kernel <<< 1,512 >>> (b_d,a_d, n );
+  vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n );
   cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el_gpu = wtime() - time_beg;
 
   cout << "GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    //assert(b[i]== b_cpu[i]);   
+    assert(b[i]== b_cpu[i]);   
     cout << b[i] << " ";  
   } cout << endl;
 
