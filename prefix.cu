@@ -31,8 +31,8 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   smem[threadIdx.x] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%128 == 0 ) { smem[0] = smem[0] + smem[1] + res;   //** add previos result to telement zero
-                              b_d[blockIdx.x*128] = smem[0];}  
+  if (tid%128 == 0 ) { smem[0] = smem[0] + res;   //** add previos result to telement zero
+                              b_d[blockIdx.x*128] = smem[0]; break;}  
 
   offset = 1; //1->2->4
   for (d =0; d < 7 ; d++){                        // depth = 3
