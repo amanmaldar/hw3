@@ -32,7 +32,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   __syncthreads(); //wait for all threads
 
   if (tid%128 == 0 ) { smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   
-                              b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;}
+                              b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;} //** add previos result to telement zero 
 
   offset = 1; //1->2->4
   for (d =0; d < 7 ; d++){                        // depth = 3
@@ -45,7 +45,7 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
     }// end if
     offset *=2;
    } // end for 
-   b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128] + res; // add this part  // save result to b_d after adding res to it;
+   b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128] //+ res; no need as we alreasy are adding result to element zero above **  // save result to b_d after adding res to it;
       __syncthreads();
   if(tid%128 == 127) {res = b_d[blockIdx.x*128+127];      __syncthreads(); }  // if last thread in block save cout
   tid += 128;
