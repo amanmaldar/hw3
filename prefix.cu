@@ -68,6 +68,11 @@ for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}
   cout << endl;
   int b_cpu[n];
   fillPrefixSum(a, n, b_cpu);
+  cout << "cpu result is: ";
+for (int i = 0; i < n; i++) {  
+  
+  cout << b_cpu[i] << " ";
+  }cout << endl;
   
 int *a_d, *b_d; //device storage pointers
 
