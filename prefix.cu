@@ -21,7 +21,7 @@ while (tid < n) {
   //if (tid == 1) { smem[1] = 1001; b_d[1] = smem[0]; tid += 8; break;}
   for (d =0; d < 1; ++d){
     offset = 1; //2^d;
-    if (tid >0){
+    if (tid >= offset){
         //smem[threadIdx.x] += smem[threadIdx.x-1] ;
       __syncthreads();
       smem[tid] += smem[tid-1] ;
