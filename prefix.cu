@@ -17,7 +17,7 @@ __shared__ int smem[256];
 smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid == 0) { smem[0] = a_d[0]; b_d[threadIdx.x] = smem[threadIdx.x];  break;}
+  if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0];  break;}
   
   for (d =0; d < depth; d++){
     offset = 2^d;
@@ -27,8 +27,9 @@ while (tid < n) {
     }// end if
     __syncthreads();
     //if (d = depth -1) 
-    {tid += 8;}
+    
   } // end for 
+  tid += 8;
 } // end while (tid < n)
 } // end kernel function
 
