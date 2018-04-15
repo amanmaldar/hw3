@@ -58,7 +58,7 @@ int
 main (int args, char **argv)
 {
   int threadsInBlock = 128;
-  int numberOfBlocks = 1;
+  int numberOfBlocks = 2;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 256;
   int b_cpu[n];
