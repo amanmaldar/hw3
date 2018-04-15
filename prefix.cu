@@ -26,7 +26,7 @@ while (tid < n) {
   
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
-        b_d[tid] = smem[tid];  // add result from previous block to each element  
+       // b_d[tid] = smem[tid];  // add result from previous block to each element  
         
        
     }// end if
@@ -45,7 +45,7 @@ int
 main (int args, char **argv)
 {
 // configure matrix dimensions
-int n = 8;
+int n = 16;
 int *a= (int *)malloc(sizeof(int)*n);
 int *b= (int *)malloc(sizeof(int)*n);
 // Initialize matrix A and B
