@@ -21,7 +21,7 @@ __device__ int res=0;  //result from one block to next block
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
-int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
+int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
  // int smemSize = blockDim.x*gridDim.x;
 __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K shared memory
   int d = 0;
@@ -31,8 +31,8 @@ __shared__ int smem[128];    // numberOfBlocks*threadsInBlock  = 2^7 + 2^7 = 16K
   smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%128 == 0 ) { smem[tid%128] = a_d[blockIdx.x*128+threadIdx.x];   
-                              b_d[blockIdx.x*128+threadIdx.x] = smem[tid%128]+res;} //** add previos result to telement zero 
+  if (tid%128 == 0 ) { smem[0] = a_d[blockIdx.x*128+ res];   //** add previos result to telement zero
+                              b_d[blockIdx.x*128] = smem[0];}  
 
   offset = 1; //1->2->4
   for (d =0; d < 7 ; d++){                        // depth = 3
