@@ -12,7 +12,7 @@ using namespace std;
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n) {
 int tid = blockIdx.x* blockDim.x+ threadIdx.x; // initialize with block number. Tid = 0 -> 10240
 __shared__ int smem[256];
-  int depth = 4;    //log(blockDim.x) = log(8) = 3
+  int depth = 3;    //log(blockDim.x) = log(8) = 3
   int d =0;
   int offset = 0;
 smem[tid] = a_d[tid];
@@ -60,7 +60,7 @@ cudaMemcpy (a_d, a, sizeof (int) * n, cudaMemcpyHostToDevice);
 
 // perform multiplication on GPU
 auto time_beg = wtime();
-vec_mult_kernel <<< 1,16 >>> (b_d,a_d, n );
+vec_mult_kernel <<< 1,8 >>> (b_d,a_d, n );
 cudaMemcpy (b, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   cout << "result is: ";
 for (int i = 0; i < n; i++) {  cout << b[i] << " ";}
