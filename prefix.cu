@@ -15,17 +15,19 @@ __shared__ int smem[256];
   int depth = 3;    //log(blockDim.x) = log(8) = 3
   int d =0;
   int offset = 0;
-smem[tid] = a_d[tid];   // copy datat to shared memory
-__syncthreads(); //wait for all threads
-while (tid < n) {
+  
+  while (tid < n) {
+  smem[tid] = a_d[tid];   // copy datat to shared memory
+  __syncthreads(); //wait for all threads
+
   if (tid%blockDim.x == 0 ) { b_d[tid] = smem[tid]+res;  tid += blockDim.x ; break;}
   offset = 1; //1->2->4
-  for (d =0; d < 1 ; d++){                        // depth = 3
+  for (d =0; d < depth ; d++){                        // depth = 3
     
     if (tid%blockDim.x >= offset){
   
      
-      smem[tid] += smem[tid-1] ;           //after writing to smem do synchronize
+      smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();
        // b_d[tid] = smem[tid];  // add result from previous block to each element  
         
@@ -33,7 +35,7 @@ while (tid < n) {
     }// end if
     offset *=2;
    } // end for 
-   b_d[tid] = smem[tid]; // + res; // add this part  // save result to b_d after adding res to it;
+   b_d[tid] = smem[tid] + res; // add this part  // save result to b_d after adding res to it;
   if(tid%blockDim.x == blockDim.x-1) {res = b_d[tid];}  // if last thread in block save cout
   __syncthreads();
   tid += blockDim.x;
