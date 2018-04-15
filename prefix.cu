@@ -68,7 +68,8 @@ main (int args, char **argv)
   int *b= (int *)malloc(sizeof(int)*n);
   
   cout << "array is: "; 
-  for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; cout << a[i] << " ";}   cout << endl;
+  for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; //cout << a[i] << " ";
+                              }   cout << endl;
   
   auto time_beg = wtime();
   fillPrefixSum(a, n, b_cpu);
