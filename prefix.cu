@@ -14,7 +14,7 @@ __shared__ int smem[256];
 smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid == 0) { smem[0] = a_d[0]; a[threadIdx.x] = smem[threadIdx.x];  break;}
+  if (tid == 0) { smem[0] = a_d[0]; b_d[threadIdx.x] = smem[threadIdx.x];  break;}
 
   for (int depth = 0; depth < 3; depth++)
 
