@@ -20,7 +20,7 @@ __shared__ int smem[256];
   smem[tid] = a_d[tid];   // copy datat to shared memory
   __syncthreads(); //wait for all threads
 
-  if (tid%blockDim.x == 0 ) { b_d[tid] = smem[tid]+res;  tid += blockDim.x ; break;}
+  if (tid%blockDim.x == 0 ) { b_d[tid] = smem[tid]+res}
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
