@@ -57,8 +57,8 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 512;
-  int numberOfBlocks = 512;
+  int threadsInBlock = 1024;
+  int numberOfBlocks = 1024;
   int n = threadsInBlock*numberOfBlocks;
   //int n = 16;
   int b_cpu[n];
