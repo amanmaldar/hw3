@@ -71,7 +71,7 @@ main (int args, char **argv)
   
   cout << "CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { //cout << b_cpu[i] << " ";   
+  { cout << b_cpu[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -88,8 +88,8 @@ main (int args, char **argv)
 
   cout << "GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    assert(b[i]== b_cpu[i]);   
-    //cout << b[i] << " ";  
+    //assert(b[i]== b_cpu[i]);   
+    cout << b[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
