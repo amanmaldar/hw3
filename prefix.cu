@@ -17,12 +17,12 @@ __shared__ int smem[256];
 smem[threadIdx.x] = a_d[threadIdx.x];
 __syncthreads(); //wait for all threads
 while (tid < n) {
-  if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0];  break;}
+  if (tid == 0) { smem[0] = a_d[0]; b_d[0] = smem[0]; tid += 8; break;}
   
   for (d =0; d < depth; d++){
     offset = 2^d;
-    if (tid >= offset){
-        smem[threadIdx.x] += smem[threadIdx.x-1] ;
+    if (tid >= offset & tid < n){
+        smem[threadIdx.x] += smem[threadIdx.x-offset] ;
         b_d[threadIdx.x] = smem[threadIdx.x];   
     }// end if
     __syncthreads();
