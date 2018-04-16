@@ -75,10 +75,10 @@ main (int args, char **argv)
   fillPrefixSum(a, n, b_cpu);
   auto el_cpu = wtime() - time_beg;
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
-    return 0;
+/*   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { cout << b_cpu[i] << " ";   
+  { //cout << b_cpu[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -101,6 +101,6 @@ main (int args, char **argv)
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
-  cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl;
+  cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; */
   return 0; //new
 }
