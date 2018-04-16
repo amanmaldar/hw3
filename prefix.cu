@@ -79,7 +79,7 @@ main (int args, char **argv)
   int threadsInBlock = 4;
   int numberOfBlocks = 4;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 16;
+  int n = 32;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -114,13 +114,13 @@ main (int args, char **argv)
 
     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
-    int res = 0;
+/*    int res = 0;
     for (int i=0;i<n;i++){
         if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
         if((i+1)%threadsInBlock!=0){
         b_cpu[i]+=res;
         }
-    }
+    }*/
       auto el_gpu = wtime() - time_beg;
 
 
