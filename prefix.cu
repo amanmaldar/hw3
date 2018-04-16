@@ -109,7 +109,7 @@ main (int args, char **argv)
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    assert(b_ref[i]== b_cpu[i], "Error at i= ",i);   
+    assert(b_ref[i]== b_cpu[i], "Error at i= " << i);   
     //cout << b_cpu[i] << " ";  
   } cout << endl;
 
