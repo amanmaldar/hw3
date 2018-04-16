@@ -69,7 +69,7 @@ main (int args, char **argv)
   
   cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; //cout << a[i] << " ";
-                              }   /cout << endl;
+                              }   cout << endl;
   
   auto time_beg = wtime();
   fillPrefixSum(a, n, b_cpu);
