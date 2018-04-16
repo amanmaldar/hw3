@@ -73,10 +73,10 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 128;
-  int numberOfBlocks = 128;
+  int threadsInBlock = 4;
+  int numberOfBlocks = 4;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 16384;
+  int n = 32;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
