@@ -60,7 +60,7 @@ main (int args, char **argv)
   int threadsInBlock = 128;
   int numberOfBlocks = 2;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 256;
+  int n = 32000000;
   int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -69,12 +69,13 @@ main (int args, char **argv)
   
   cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; //cout << a[i] << " ";
-                              }   cout << endl;
+                              }   /cout << endl;
   
   auto time_beg = wtime();
   fillPrefixSum(a, n, b_cpu);
   auto el_cpu = wtime() - time_beg;
-  
+  cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
+    return 0;
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
   { cout << b_cpu[i] << " ";   
