@@ -61,11 +61,11 @@ main (int args, char **argv)
   int numberOfBlocks = 2;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 32000000;
-  int b_cpu[n];
+  //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
   int *a= (int *)malloc(sizeof(int)*n);
-  int *b= (int *)malloc(sizeof(int)*n);
+  int *b_cpu= (int *)malloc(sizeof(int)*n);
   
   cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { a[i] = rand () % 5 + 2; //cout << a[i] << " ";
