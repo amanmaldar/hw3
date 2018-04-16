@@ -93,7 +93,7 @@ main (int args, char **argv)
    
     int res = b_cpu[0];
     for (int i=0;i<n;i++){
-        if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }
+        if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
         if((i+1)%threadsInBlock!=0){
         b_cpu[i]+=res;
         }
