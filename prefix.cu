@@ -1,4 +1,6 @@
-
+// limited to 16284 enetries. 128 x 128 kernel is used. 16384 elements are copied to memory and each block performs klogg alogo on 128 
+// elements . results are pushed back to cpu and cpu performs the final addition.
+// question - i want to have more than 128 x 128 elements. lets say 128 x 128 x 4. we will see how kernel performs in next program
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -57,8 +59,8 @@ main (int args, char **argv)
 {
   int threadsInBlock = 128;
   int numberOfBlocks = 128;
-  //int n = threadsInBlock*numberOfBlocks;
-  int n = 128*128*4;
+  int n = threadsInBlock*numberOfBlocks;
+  //int n = 128*128*4;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -91,6 +93,8 @@ main (int args, char **argv)
   vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
    
+    // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
+    // next element in next block. This is sequential process.
     int res = 0;
     for (int i=0;i<n;i++){
         if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
