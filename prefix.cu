@@ -91,7 +91,8 @@ main (int args, char **argv)
   time_beg = wtime();
   vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-   
+      auto el_gpu = wtime() - time_beg;
+
     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
     int res = 0;
@@ -101,7 +102,6 @@ main (int args, char **argv)
         b_cpu[i]+=res;
         }
     }
-   auto el_gpu = wtime() - time_beg;
 
 
 
