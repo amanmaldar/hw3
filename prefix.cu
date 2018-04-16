@@ -116,10 +116,13 @@ main (int args, char **argv)
     // next element in next block. This is sequential process.
     int res = 0;
     for (int i=0;i<n;i++){
-        if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
-        if((i+1)%threadsInBlock!=0){
-        b_cpu[i]+=res;
-        }
+         b_cpu[i]+=res;
+        if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
+        
+        /*
+        if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; continue;}
+        if((i+1)%threadsInBlock!=0){  b_cpu[i]+=res; }
+        */
     }
       auto el_gpu = wtime() - time_beg;
 
