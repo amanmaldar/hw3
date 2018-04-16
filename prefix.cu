@@ -75,7 +75,7 @@ main (int args, char **argv)
   int threadsInBlock = 128;
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 32000000;
+  int n = 16384;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -120,11 +120,9 @@ main (int args, char **argv)
       auto el_gpu = wtime() - time_beg;
 
 
-
-
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    //ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);   
+    ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);   
     //cout << b_cpu[i] << " ";  
   } cout << endl;
 
