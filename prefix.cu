@@ -89,8 +89,17 @@ main (int args, char **argv)
 
   time_beg = wtime();
   vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
-  auto el_gpu = wtime() - time_beg;
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+   
+    int res = b_cpu[0];
+    for (int i=0;i<n;i++){
+        if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }
+        if((i+1)%threadsInBlock!=0){
+        b_cpu[i]+=res;
+        }
+    }
+   auto el_gpu = wtime() - time_beg;
+
 
 
   cout << "\n GPU Result is: ";
