@@ -91,7 +91,7 @@ main (int args, char **argv)
   vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
    
-    int res = b_cpu[0];
+    int res = 0;
     for (int i=0;i<n;i++){
         if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
         if((i+1)%threadsInBlock!=0){
