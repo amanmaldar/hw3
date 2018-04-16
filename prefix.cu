@@ -38,8 +38,8 @@ __device__ int smem[32000000]; // 128*128
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
-//int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
-    int tid = blockIdx.x* 4+ threadIdx.x; 
+int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
+    
 
 
   int d = 0;
@@ -68,7 +68,7 @@ __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
  // tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 
-      tid += 16;
+     // tid += 16;
 } // end while (tid < n)
 } // end kernel function
 
