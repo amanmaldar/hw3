@@ -38,7 +38,7 @@ __device__ int smem[32000000]; // 128*128
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
-int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
+int tid = blockIdx.x* blockDim.x+ .x; 
     
 
 
@@ -62,14 +62,14 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     }// end if
     offset *=2;
    } // end for 
-  
+         b_d[tid] = smem[tid]; 
+
       __syncthreads();
-       b_d[tid] = smem[tid]; 
      // 3 new line below
-      if ((tid+1)%4 == 0 && (tid+1) != n) {smem[tid+1] += smem[tid]; __syncthreads();}
+      if ((threadIdx.x == 3 && threadIdx != 15) {smem[tid+1] += smem[tid]; __syncthreads();}
       else
       {
-            if(tid%4 !=0){
+            if(threadIdx.x > 0 & threadIdx.x < 4){
           smem[tid]+= smem[blockIdx.x*blockDim.x]; __syncthreads();}
       }
       b_d[tid] = smem[tid]; 
@@ -86,7 +86,7 @@ int
 main (int args, char **argv)
 {
   int threadsInBlock = 4;
-  int numberOfBlocks = 128;
+  int numberOfBlocks = 4;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 16;
   //int b_cpu[n];
