@@ -66,7 +66,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       __syncthreads();
        b_d[tid] = smem[tid]; 
      // 3 new line below
-      if ((tid+1)%4 == 0 && (tid+1) != n) {smem[tid+1] += b_d[tid]; __syncthreads();}
+      if ((tid+1)%4 == 0 && (tid+1) != n) {smem[tid+1] += smem[tid]; __syncthreads();}
       else
       {
             if(tid%4 !=0){
