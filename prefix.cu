@@ -10,6 +10,20 @@
 #include "helper/wtime.h"
 using namespace std;
 
+
+#ifndef NDEBUG
+#   define ASSERT(condition, message) \
+    do { \
+        if (! (condition)) { \
+            std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
+                      << " line " << __LINE__ << ": " << message << std::endl; \
+            std::terminate(); \
+        } \
+    } while (false)
+#else
+#   define ASSERT(condition, message) do { } while (false)
+#endif
+
 void fillPrefixSum(int arr[], int n, int prefixSum[])
 {
     prefixSum[0] = arr[0];
@@ -109,7 +123,7 @@ main (int args, char **argv)
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    assert((b_ref[i]== b_cpu[i] && "Error at i= " << i));   
+    ASSERT((b_ref[i]== b_cpu[i] && "Error at i= " << i));   
     //cout << b_cpu[i] << " ";  
   } cout << endl;
 
