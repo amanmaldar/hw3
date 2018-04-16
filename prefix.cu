@@ -62,13 +62,17 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     }// end if
     offset *=2;
    } // end for 
-   b_d[tid] = smem[tid]; 
-     //b_d[tid] = tid; 
+  // b_d[tid] = smem[tid]; 
+      
+     // 3 new line below
+      if (tid+1%128 == 0 && tid+1 != n) {smem[tid+1] += smem[tid]; __syncthreads()}
+      else{smem[tid]+= smem[blockIdx.x*blockDim.x]; __syncthreads();}
+      b_d[tid] = smem[tid]; 
+   
+      //uncomment//b_d[tid] = tid; 
       //__syncthreads();
   
- // tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
-
-      tid += 16384;
+      tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 } // end while (tid < n)
 } // end kernel function
 
@@ -76,10 +80,10 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 128;
+  int threadsInBlock = 4;
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 32000000;
+  int n = 16;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -88,7 +92,7 @@ main (int args, char **argv)
   int *b_ref= (int *)malloc(sizeof(int)*n);
     
   cout << "\n array is: "; 
-  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; //cout << a_cpu[i] << " ";
+  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; cout << a_cpu[i] << " ";
                               }   cout << endl;
   
   auto time_beg = wtime();
@@ -97,7 +101,7 @@ main (int args, char **argv)
   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { //cout << b_ref[i] << " ";   
+  { cout << b_ref[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -114,11 +118,11 @@ main (int args, char **argv)
 
     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
-    int res = 0;
+  /*  int res = 0;
     for (int i=0;i<n;i++){
          b_cpu[i]+=res;
         if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
-    }
+    }*/
       auto el_gpu = wtime() - time_beg;
 
 
@@ -130,7 +134,7 @@ main (int args, char **argv)
        //   " b_ref[i+2]: " << b_ref[i+2] <<  " b_cpu[i+2]: " << b_cpu[i+2] << 
         //  " a_cpu[i+1]: " << a_cpu[i+1] << " a_cpu[i+2]: " << a_cpu[i+2] );  
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-    //cout << b_cpu[i] << " ";  
+    cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
