@@ -60,7 +60,7 @@ main (int args, char **argv)
   int threadsInBlock = 4;
   int numberOfBlocks = 4;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 512;
+  int n = 16384;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -69,7 +69,7 @@ main (int args, char **argv)
   int *b_ref= (int *)malloc(sizeof(int)*n);
     
   cout << "\n array is: "; 
-  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; cout << a_cpu[i] << " ";
+  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; //cout << a_cpu[i] << " ";
                               }   cout << endl;
   
   auto time_beg = wtime();
@@ -78,7 +78,7 @@ main (int args, char **argv)
   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { cout << b_ref[i] << " ";   
+  { //cout << b_ref[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -108,7 +108,7 @@ main (int args, char **argv)
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     assert(b_ref[i]== b_cpu[i]);   
-    cout << b_cpu[i] << " ";  
+    //cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
