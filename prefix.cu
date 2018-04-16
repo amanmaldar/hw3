@@ -70,6 +70,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       if (blockIdx.x != 0 & threadIdx.x == 0) 
       {
           tmp1 = smem[tid-1]; __syncthreads();
+          smem[tid] += tmp1;
       }
       else
       {
