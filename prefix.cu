@@ -63,7 +63,7 @@ __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
     offset *=2;
    } // end for 
    //b_d[tid] = smem[tid]; 
-     b_d[tid] = 2; 
+     b_d[tid] = tid; 
       //__syncthreads();
   
  // tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
