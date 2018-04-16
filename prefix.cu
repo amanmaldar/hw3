@@ -62,10 +62,10 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     }// end if
     offset *=2;
    } // end for 
-  // b_d[tid] = smem[tid]; 
+   b_d[tid] = smem[tid]; 
       
      // 3 new line below
-      if (tid+1%4 == 0 && tid+1 != n) {smem[tid+1] += smem[tid]; __syncthreads();}
+      if (tid+1%4 == 0 && tid+1 != n) {smem[tid+1] += b_d[tid]; __syncthreads();}
       else{smem[tid]+= smem[blockIdx.x*blockDim.x]; __syncthreads();}
       b_d[tid] = smem[tid]; 
    
