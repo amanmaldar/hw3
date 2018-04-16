@@ -57,8 +57,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 32;
-  int numberOfBlocks = 32;
+  int threadsInBlock = 128;
+  int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 20000000;
   //int b_cpu[n];
@@ -108,7 +108,7 @@ main (int args, char **argv)
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     assert(b_ref[i]== b_cpu[i]);   
-    //cout << b_cpu[i] << " ";  
+    cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
