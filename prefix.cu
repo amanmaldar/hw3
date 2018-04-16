@@ -57,8 +57,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 128;
-  int numberOfBlocks = 128;
+  int threadsInBlock = 1024;
+  int numberOfBlocks = 1024;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 32000000;
   //int b_cpu[n];
