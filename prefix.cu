@@ -128,7 +128,7 @@ main (int args, char **argv)
   for (int i = 0; i < n; i++) {    
     //ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);  
       ASSERT(i== b_cpu[i], "Error at i= " << i);  
-    cout << b_cpu[i] << " ";  
+    //cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
