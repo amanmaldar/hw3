@@ -126,9 +126,9 @@ main (int args, char **argv)
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i <<" b_ref[i]: " << b_ref[i] << " b_cpu[i]: " << b_cpu[i] <<
-          " b_ref[i-1]: " << b_ref[i-1] << " b_cpu[i-1]: " << b_cpu[i-1] << " b_ref[i-2]: " << b_ref[i-2] << " b_cpu[i-2]: " << b_cpu[i-2] <<
-   " a_cpu[i-1]: " << a_cpu[i-1] << " a_cpu[i]: " << a_cpu[i] << " a_cpu[i+1]: " << a_cpu[i+1]);  
+    ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i <<" b_ref[i]: " << b_ref[i] << " b_cpu[i]: " << b_cpu[i] << "\n" <<
+          " b_ref[i+1]: " << b_ref[i+1] << " b_ref[i+2]: " << b_ref[i+2] << << " b_cpu[i+1]: " << b_cpu[i+1] <<  " b_cpu[i+2]: " << b_cpu[i+2] << "\n" <<
+   " b_cpu[i+1]: " << b_cpu[i+1] << " b_cpu[i+2]: " << b_cpu[i+2] );  
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
     //cout << b_cpu[i] << " ";  
   } cout << endl;
