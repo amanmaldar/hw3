@@ -46,7 +46,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     offset *=2;
    } // end for 
    b_d[tid] = smem[tid]; 
-      __syncthreads();
+      //__syncthreads();
   
   tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 
