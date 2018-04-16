@@ -1,6 +1,7 @@
 // limited to 16284 enetries. 128 x 128 kernel is used. 16384 elements are copied to memory and each block performs klogg alogo on 128 
 // elements . results are pushed back to cpu and cpu performs the final addition.
 // question - i want to have more than 128 x 128 elements. lets say 128 x 128 x 4. we will see how kernel performs in next program
+// assert ref : https://stackoverflow.com/questions/3767869/adding-message-to-assert?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -74,7 +75,7 @@ main (int args, char **argv)
   int threadsInBlock = 128;
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 16384;
+  int n = 16384*2;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
