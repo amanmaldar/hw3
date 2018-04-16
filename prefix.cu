@@ -76,7 +76,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       //uncomment//b_d[tid] = tid; 
       //__syncthreads();
   
-      tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
+      tid += 4; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 } // end while (tid < n)
 } // end kernel function
 
