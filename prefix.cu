@@ -60,7 +60,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     }// end if
     offset *=2;
    } // end for 
-   b_d[tid] = smem[tid]; 
+   //b_d[tid] = smem[tid]; 
+     b_d[tid] = tid; 
       //__syncthreads();
   
   tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
@@ -122,8 +123,8 @@ main (int args, char **argv)
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);   
-    //cout << b_cpu[i] << " ";  
+    //ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);   
+    cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
