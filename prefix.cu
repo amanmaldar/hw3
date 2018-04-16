@@ -100,6 +100,6 @@ main (int args, char **argv)
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
-  cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; */
+  cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; 
   return 0; //new
 }
