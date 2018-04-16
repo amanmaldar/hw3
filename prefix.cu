@@ -66,7 +66,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 
       __syncthreads();
      // 3 new line below
-      if (threadIdx.x == 3 & threadIdx.x != 15) {smem[tid+1] += smem[tid]; __syncthreads();}
+      if (blockIdx.x != 0 & threadIdx.x == 3 & threadIdx.x != 15) {smem[tid+1] += smem[tid]; __syncthreads();}
       else
       {
             if(threadIdx.x > 0 & threadIdx.x < 4){
