@@ -57,8 +57,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 128;
-  int numberOfBlocks = 128;
+  int threadsInBlock = 4;
+  int numberOfBlocks = 4;
   int n = threadsInBlock*numberOfBlocks;
   //int n = 128*128*4;
   //int b_cpu[n];
@@ -75,11 +75,10 @@ main (int args, char **argv)
   auto time_beg = wtime();
   fillPrefixSum(a_cpu, n, b_ref);
   auto el_cpu = wtime() - time_beg;
-  //cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { //cout << b_ref[i] << " ";   
+  { cout << b_ref[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -109,7 +108,7 @@ main (int args, char **argv)
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
     assert(b_ref[i]== b_cpu[i]);   
-    //cout << b_cpu[i] << " ";  
+    cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
