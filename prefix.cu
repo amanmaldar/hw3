@@ -62,8 +62,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
     }// end if
     offset *=2;
    } // end for 
-   //b_d[tid] = smem[tid]; 
-     b_d[tid] = tid; 
+   b_d[tid] = smem[tid]; 
+     //b_d[tid] = tid; 
       //__syncthreads();
   
  // tid += gridDim.x*blockDim.x;  //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
@@ -114,20 +114,20 @@ main (int args, char **argv)
 
     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
-/*    int res = 0;
+    int res = 0;
     for (int i=0;i<n;i++){
         if((i+1)%threadsInBlock==0){  b_cpu[i]+=res; res = b_cpu[i]; }
         if((i+1)%threadsInBlock!=0){
         b_cpu[i]+=res;
         }
-    }*/
+    }
       auto el_gpu = wtime() - time_beg;
 
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-    //ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);  
-      ASSERT(i== b_cpu[i], "Error at i= " << i);  
+    ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i);  
+      //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
     //cout << b_cpu[i] << " ";  
   } cout << endl;
 
