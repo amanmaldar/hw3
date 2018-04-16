@@ -19,7 +19,7 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 }
 
 __device__ int res=0;  //result from one block to next block
-__device__ int smem[20000000]; // 128*128
+__device__ int smem[32000000]; // 128*128
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
