@@ -66,14 +66,6 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
          b_d[tid] = smem[tid]; 
 
       __syncthreads();
-     // 3 new line below
-     
-     
-      
-     b_d[tid] = smem[tid]; 
-   
-     // b_d[tid] = tid; 
-      __syncthreads();
   
       tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 } // end while (tid < n)
