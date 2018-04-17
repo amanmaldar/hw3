@@ -33,7 +33,7 @@ __device__ int inc=0;
 __shared__ int smem[128];  // maximum number of elements from array 
 
 
-__global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
+__global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth, int *tid_d) {
     int tid = blockIdx.x * blockDim.x + threadIdx.x; 
     int d = 0;
     int offset = 0;
@@ -58,7 +58,7 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
         b_d[tid] = smem[threadIdx.x];        // *write the result to array b_d[tid] location
         __syncthreads();            // wait fir all threads to write results
         
-        if ((tid + 1) % 16384 == 0) { inc++;}
+        if ((tid + 1) % 16384 == 0) { tid_d[(tid+1)%16384]= tid; inc++;}
         tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
         
         if (tid == 32000001) { printf("\n incremented %d times\n", inc); } 
@@ -78,6 +78,7 @@ main (int args, char **argv)
   int *a_cpu= (int *)malloc(sizeof(int)*n);
   int *b_cpu= (int *)malloc(sizeof(int)*n);
   int *b_ref= (int *)malloc(sizeof(int)*n);
+      int *tid_cpu= (int *)malloc(sizeof(int)*2000);
     
   cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { 
@@ -94,17 +95,20 @@ main (int args, char **argv)
       cout << b_ref[i] << " ";   
   }  cout << endl;
   
-  int *a_d, *b_d; //device storage pointers
+  int *a_d, *b_d, *tid_d; //device storage pointers
 
   cudaMalloc ((void **) &a_d, sizeof (int) * n);
   cudaMalloc ((void **) &b_d, sizeof (int) * n);
+    cudaMalloc ((void **) &tid_d, sizeof (int) * 2000);
 
   cudaMemcpy (a_d, a_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
+  prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth, tid_d );
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+      cudaMemcpy (tid_cpu, tid_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+
   auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
@@ -112,6 +116,14 @@ main (int args, char **argv)
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << b_cpu[i] << " ";  
+  } cout << endl;
+    
+    
+  cout << "\n tid switch points are: ";
+  for (int i = 0; i < 250; i++) {    
+      //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
+     // ASSERT(i == b_cpu[i], "Error at i= " << i);  
+      cout << tid_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
