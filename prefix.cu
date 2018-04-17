@@ -121,7 +121,7 @@ main (int args, char **argv)
 
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < 1024; i++) {    
-      cout << b_ref[i] << " ";   
+      //cout << b_ref[i] << " ";   
   }  cout << endl;
     
   cout << "\n GPU Result is: ";
@@ -129,7 +129,7 @@ main (int args, char **argv)
       assert(b_ref[i] == b_cpu[i]);
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
-      cout << b_cpu[i] << " ";  
+      //cout << b_cpu[i] << " ";  
   } cout << endl;
     
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
