@@ -30,7 +30,7 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 
 __device__ int res=0;           //result from one block to next block
 __device__ int inc=0;
-__shared__ int smem[16384];  // maximum number of elements from array 
+__global__ int smem[16384];  // maximum number of elements from array 
 
 
 __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
