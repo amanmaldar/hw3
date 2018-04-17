@@ -1,12 +1,8 @@
-// limited to 16284 enetries. 128 x 128 kernel is used. 16384 elements are copied to memory and each block performs klogg alogo on 128 
-// elements . results are pushed back to cpu and cpu performs the final addition.
-// question - i want to have more than 128 x 128 elements. lets say 128 x 128 x 4. we will see how kernel performs in next program
 // assert ref : https://stackoverflow.com/questions/3767869/adding-message-to-assert?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
-#include <chrono>
 #include <math.h>
 #include "helper/wtime.h"
 using namespace std;
@@ -36,33 +32,34 @@ __device__ int res=0;           //result from one block to next block
 __device__ int smem[32000000];  // maximum number of elements from array 
 
 
-__global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
-    int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
+__global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
+    int tid = blockIdx.x * blockDim.x + threadIdx.x; 
     int d = 0;
     int offset = 0;
 
     while (tid < n) {
-    smem[tid] = a_d[tid];       // each thread copy data to shared memory
-    __syncthreads();            // wait for all threads
+        smem[tid] = a_d[tid];       // each thread copy data to shared memory
+        __syncthreads();            // wait for all threads
 
-    if (tid%16384 == 0 ) {   smem[tid]= res+ smem[tid]; __syncthreads();    b_d[tid] = smem[tid]; }  
+        //if (tid%16384 == 0 ) {   smem[tid] += res; __syncthreads();  } // result are written at the end*  
 
-    offset = 1;                 //1->2->4->8
-    for (d =0; d < depth ; d++) {                    
+        offset = 1;                 //1->2->4->8
+        for (d =0; d < depth ; d++) {                    
 
-        if (tid%16384 >= offset) {  
-            smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
-            __syncthreads();      
-        } // end if
+            if (tid%16384 >= offset) {  
+                smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
+                __syncthreads();      
+            } // end if
 
-        offset *=2;
-    } // end for loop
+            offset *=2;
+        } // end for loop
 
-    b_d[tid] = smem[tid]; 
+        b_d[tid] = smem[tid] + res;        // *write the result to array b_d[tid] location
 
-    __syncthreads();
-    if ((tid+1)%16384 == 0) {res = smem[tid];}
-    tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
+        __syncthreads();            // wait fir all threads to write results
+        
+        if ((tid + 1) % 16384 == 0) { res = smem[tid]; }
+        tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
     } // end while (tid < n)
 } // end kernel function
 
@@ -102,7 +99,7 @@ main (int args, char **argv)
   cudaMemcpy (a_d, a_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
+  prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
   auto el_gpu = wtime() - time_beg;
