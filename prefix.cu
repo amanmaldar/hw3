@@ -50,12 +50,12 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       smem[tid] = a_d[tid];   // copy data to shared memory
   __syncthreads(); //wait for all threads
 
-  if (threadIdx.x == 0 ) {   b_d[tid] = smem[tid]; }  
+  if (tid%16384 == 0 ) {   smem[tid]= res+ smem[tid]; __syncthreads();    b_d[tid] = smem[tid]; }  
 
   offset = 1; //1->2->4
   for (d =0; d < depth ; d++){                        // depth = 3
     
-    if (tid%blockDim.x >= offset){  
+    if (tid%16384 >= offset){  
      
       smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
       __syncthreads();      
@@ -66,7 +66,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
          b_d[tid] = smem[tid]; 
 
       __syncthreads();
-  
+    if ((tid+1)%16384 == 0) {res = smem[tid];}
       tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 } // end while (tid < n)
 } // end kernel function
@@ -80,7 +80,7 @@ main (int args, char **argv)
   //int n = threadsInBlock*numberOfBlocks;
   int n = 32000000;
   //int b_cpu[n];
-  int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
+  int depth = log2(16384);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
   int *a_cpu= (int *)malloc(sizeof(int)*n);
   int *b_cpu= (int *)malloc(sizeof(int)*n);
@@ -124,13 +124,8 @@ main (int args, char **argv)
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
-   // ASSERT(b_ref[i]== b_cpu[i], "Error at i= " << i << 
-     //     " b_ref[i]: " << b_ref[i] << " b_cpu[i]: " << b_cpu[i] <<
-      //    " b_ref[i+1]: " << b_ref[i+1] << " b_cpu[i+1]: " << b_cpu[i+1] << 
-       //   " b_ref[i+2]: " << b_ref[i+2] <<  " b_cpu[i+2]: " << b_cpu[i+2] << 
-        //  " a_cpu[i+1]: " << a_cpu[i+1] << " a_cpu[i+2]: " << a_cpu[i+2] );  
-      //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-    //cout << b_cpu[i] << " ";  
+      ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
+      //cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
