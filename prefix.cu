@@ -33,7 +33,7 @@ __device__ int inc=0;
 __shared__ int smem[128];  // maximum number of elements from array 
 
 
-__global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth, int *tid_d) {
+__global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
     int tid = blockIdx.x * blockDim.x + threadIdx.x; 
     int d = 0;
     int offset = 0;
@@ -58,10 +58,9 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth, int *t
         b_d[tid] = smem[threadIdx.x];        // *write the result to array b_d[tid] location
         __syncthreads();            // wait fir all threads to write results
         
-        if ((tid + 1) % 16384 == 0) { tid_d[(tid+1)%16384]= tid; inc++; printf("\n incremented %d times\n", inc);}
+        //if ((tid + 1) % 16384 == 0) { inc++; printf("\n incremented %d times\n", inc);}
         tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
         
-       // if (tid == 32000001) { printf("\n incremented %d times\n", inc); } 
     } // end while (tid < n)
 } // end kernel function
 
@@ -78,7 +77,6 @@ main (int args, char **argv)
   int *a_cpu= (int *)malloc(sizeof(int)*n);
   int *b_cpu= (int *)malloc(sizeof(int)*n);
   int *b_ref= (int *)malloc(sizeof(int)*n);
-      int *tid_cpu= (int *)malloc(sizeof(int)*2000);
     
   cout << "\n array is: "; 
   for (int i = 0; i < n; i++) { 
@@ -92,23 +90,19 @@ main (int args, char **argv)
   
 
   
-  int *a_d, *b_d, *tid_d; //device storage pointers
+  int *a_d, *b_d; //device storage pointers
 
   cudaMalloc ((void **) &a_d, sizeof (int) * n);
   cudaMalloc ((void **) &b_d, sizeof (int) * n);
-    cudaMalloc ((void **) &tid_d, sizeof (int) * 2000);
 
   cudaMemcpy (a_d, a_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
     cudaMemcpy (b_d, b_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
-    //cudaMemcpy (tid_d, tid_cpu, sizeof (int) * 2000, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
-  prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth, tid_d );
+  prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth);
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-     // cudaMemcpy (tid_cpu, tid_d, sizeof (int) * 2000, cudaMemcpyDeviceToHost);
-
-
+ 
      // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
   int res = 0;
@@ -120,7 +114,7 @@ main (int args, char **argv)
   auto el_gpu = wtime() - time_beg;
 
   cout << "\n CPU Result is: "; 
-  for (int i = 0; i < 1024; i++) {    
+  for (int i = 0; i < n; i++) {    
       //cout << b_ref[i] << " ";   
   }  cout << endl;
     
@@ -128,7 +122,6 @@ main (int args, char **argv)
   for (int i = 0; i < n; i++) {    
       assert(b_ref[i] == b_cpu[i]);
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-     // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       //cout << b_cpu[i] << " ";  
   } cout << endl;
     
