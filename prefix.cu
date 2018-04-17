@@ -120,12 +120,12 @@ main (int args, char **argv)
   auto el_gpu = wtime() - time_beg;
 
   cout << "\n CPU Result is: "; 
-  for (int i = 0; i < 500; i++) {    
+  for (int i = 0; i < 1024; i++) {    
       cout << b_ref[i] << " ";   
   }  cout << endl;
     
   cout << "\n GPU Result is: ";
-  for (int i = 0; i < 500; i++) {    
+  for (int i = 0; i < 1024; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << b_cpu[i] << " ";  
