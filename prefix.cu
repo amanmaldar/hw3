@@ -123,7 +123,7 @@ main (int args, char **argv)
       auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
-  for (int i = 0; i < 250; i++) {    
+  for (int i = 31999700; i < n; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << b_cpu[i] << " ";  
@@ -131,7 +131,7 @@ main (int args, char **argv)
     
     
   cout << "\n tid switch points are: ";
-  for (int i = 0; i < 250; i++) {    
+  for (int i = 31999700; i < n; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << tid_cpu[i] << " ";  
