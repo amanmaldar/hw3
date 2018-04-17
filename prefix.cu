@@ -35,7 +35,6 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 
 __device__ int res=0;  //result from one block to next block
 __device__ int smem[32000000]; // 128*128 
-__device__ int tmp1;
       
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
@@ -69,27 +68,14 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       __syncthreads();
      // 3 new line below
      
-      if (blockIdx.x != 0 && threadIdx.x == 0) 
-          //if ( threadIdx.x == 0) 
-      {
-          tmp1 = smem[tid-1]; __syncthreads();
-          smem[tid] += tmp1; __syncthreads();
-           
-          printf("test1 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x, tid, smem[tid]);
-      }
-      else if( blockIdx.x != 0 && threadIdx.x > 0 && threadIdx.x < 4)
-      {
-          printf("test1.5 before block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
-        smem[tid]+= tmp1; __syncthreads();
-          printf("test2 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
-      }
+     
       
      b_d[tid] = smem[tid]; 
    
      // b_d[tid] = tid; 
       __syncthreads();
   
-      tid += 4; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
+      tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
 } // end while (tid < n)
 } // end kernel function
 
@@ -97,10 +83,10 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 int
 main (int args, char **argv)
 {
-  int threadsInBlock = 4;
-  int numberOfBlocks = 4;
+  int threadsInBlock = 128;
+  int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
-  int n = 8;
+  int n = 32000000;
   //int b_cpu[n];
   int depth = log2(threadsInBlock);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
 
@@ -109,7 +95,7 @@ main (int args, char **argv)
   int *b_ref= (int *)malloc(sizeof(int)*n);
     
   cout << "\n array is: "; 
-  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; cout << a_cpu[i] << " ";
+  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; //cout << a_cpu[i] << " ";
                               }   cout << endl;
   
   auto time_beg = wtime();
@@ -118,7 +104,7 @@ main (int args, char **argv)
   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) 
-  { cout << b_ref[i] << " ";   
+  {// cout << b_ref[i] << " ";   
   } cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -135,11 +121,11 @@ main (int args, char **argv)
 
     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
-  /*  int res = 0;
+    int res = 0;
     for (int i=0;i<n;i++){
          b_cpu[i]+=res;
         if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
-    }*/
+    }
       auto el_gpu = wtime() - time_beg;
 
 
@@ -151,7 +137,7 @@ main (int args, char **argv)
        //   " b_ref[i+2]: " << b_ref[i+2] <<  " b_cpu[i+2]: " << b_cpu[i+2] << 
         //  " a_cpu[i+1]: " << a_cpu[i+1] << " a_cpu[i+2]: " << a_cpu[i+2] );  
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-    cout << b_cpu[i] << " ";  
+    //cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
