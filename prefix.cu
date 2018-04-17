@@ -90,10 +90,7 @@ main (int args, char **argv)
   fillPrefixSum(a_cpu, n, b_ref);
   auto el_cpu = wtime() - time_beg;
   
-  cout << "\n CPU Result is: "; 
-  for (int i = 31999700; i < n; i++) {    
-      cout << b_ref[i] << " ";   
-  }  cout << endl;
+
   
   int *a_d, *b_d, *tid_d; //device storage pointers
 
@@ -114,29 +111,26 @@ main (int args, char **argv)
 
      // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
-    int res = 0;
+  int res = 0;
   for (int i = 0; i < n; i++) {    
          b_cpu[i]+=res;
         if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
-    }
+  }
     
-      auto el_gpu = wtime() - time_beg;
+  auto el_gpu = wtime() - time_beg;
 
+  cout << "\n CPU Result is: "; 
+  for (int i = 0; i < 500; i++) {    
+      cout << b_ref[i] << " ";   
+  }  cout << endl;
+    
   cout << "\n GPU Result is: ";
-  for (int i = 31999700; i < n; i++) {    
+  for (int i = 0; i < 500; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << b_cpu[i] << " ";  
   } cout << endl;
     
-  /*  
-  cout << "\n tid switch points are: ";
-  for (int i = 31999700; i < n; i++) {    
-      //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-     // ASSERT(i == b_cpu[i], "Error at i= " << i);  
-      cout << tid_cpu[i] << " ";  
-  } cout << endl;
-*/
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
   cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; 
   return 0; 
