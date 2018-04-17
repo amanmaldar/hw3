@@ -74,7 +74,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       {
           tmp1 = smem[tid-1]; __syncthreads();
           smem[tid] += tmp1; __syncthreads();
-           b_d[tid] = smem[tid]; 
+           
          // printf("test1 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x, tid, smem[tid]);
       }
       else if( blockIdx.x != 0 && threadIdx.x > 0 && threadIdx.x < 4)
@@ -84,9 +84,9 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
        //   printf("test2 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
       }
       
-     
+     b_d[tid] = smem[tid]; 
    
-      b_d[tid] = tid; 
+     // b_d[tid] = tid; 
       __syncthreads();
   
       tid += 4; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
