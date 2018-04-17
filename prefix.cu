@@ -115,7 +115,7 @@ main (int args, char **argv)
      // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
     int res = 0;
-    for (int i=0;i<n;i++){
+  for (int i = 31999700; i < n; i++) {    
          b_cpu[i]+=res;
         if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
     }
@@ -129,14 +129,14 @@ main (int args, char **argv)
       cout << b_cpu[i] << " ";  
   } cout << endl;
     
-    
+  /*  
   cout << "\n tid switch points are: ";
   for (int i = 31999700; i < n; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << tid_cpu[i] << " ";  
   } cout << endl;
-
+*/
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
   cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; 
   return 0; 
