@@ -102,12 +102,14 @@ main (int args, char **argv)
     cudaMalloc ((void **) &tid_d, sizeof (int) * 2000);
 
   cudaMemcpy (a_d, a_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
+    cudaMemcpy (b_d, b_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
+    cudaMemcpy (tid_d, tid_cpu, sizeof (int) * 2000, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
   prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth, tid_d );
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-      cudaMemcpy (tid_cpu, tid_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
+      cudaMemcpy (tid_cpu, tid_d, sizeof (int) * 2000, cudaMemcpyDeviceToHost);
 
   auto el_gpu = wtime() - time_beg;
 
