@@ -56,7 +56,7 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
         } // end for loop
 
         //b_d[tid] = smem[tid] + res;        // *write the result to array b_d[tid] location
-        b_d[tid] = tid;
+        b_d[tid] = a_d[tid];
         __syncthreads();            // wait fir all threads to write results
         
         if ((tid + 1) % 16384 == 0) { res = smem[tid]; inc++;}
