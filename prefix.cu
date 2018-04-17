@@ -30,7 +30,7 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 
 __device__ int res=0;           //result from one block to next block
 __device__ int inc=0;
-__device__ int smem[32000000];  // maximum number of elements from array 
+__shared__ int smem[16384];  // maximum number of elements from array 
 
 
 __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
@@ -74,16 +74,17 @@ main (int args, char **argv)
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 32000000;
-  //int b_cpu[n];
-  int depth = log2(16384);    //log(blockDim.x) = log(8) = 3,  blockDim.x = threadsInBlock
+  int depth = log2(16384);  
 
   int *a_cpu= (int *)malloc(sizeof(int)*n);
   int *b_cpu= (int *)malloc(sizeof(int)*n);
   int *b_ref= (int *)malloc(sizeof(int)*n);
     
   cout << "\n array is: "; 
-  for (int i = 0; i < n; i++) { a_cpu[i] = rand () % 5 + 2; //cout << a_cpu[i] << " ";
-                              }   cout << endl;
+  for (int i = 0; i < n; i++) { 
+      a_cpu[i] = rand () % 5 + 2; 
+      //cout << a_cpu[i] << " ";
+  }   cout << endl;
   
   auto time_beg = wtime();
   fillPrefixSum(a_cpu, n, b_ref);
@@ -91,7 +92,7 @@ main (int args, char **argv)
   
   cout << "\n CPU Result is: "; 
   for (int i = 0; i < n; i++) {
-        // cout << b_ref[i] << " ";   
+     // cout << b_ref[i] << " ";   
   }  cout << endl;
   
   int *a_d, *b_d; //device storage pointers
