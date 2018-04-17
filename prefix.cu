@@ -72,8 +72,8 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       if (blockIdx.x != 0 && threadIdx.x == 0) 
           //if ( threadIdx.x == 0) 
       {
-          tmp1 = 500;//smem[tid-1]; __syncthreads();
-          smem[tid] += 1000; __syncthreads();
+          tmp1 = smem[tid-1]; __syncthreads();
+          smem[tid] += tmp1; __syncthreads();
       }
       else if( blockIdx.x != 0 & threadIdx.x > 0 & threadIdx.x < 4)
       {
