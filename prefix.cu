@@ -103,15 +103,24 @@ main (int args, char **argv)
 
   cudaMemcpy (a_d, a_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
     cudaMemcpy (b_d, b_cpu, sizeof (int) * n, cudaMemcpyHostToDevice);
-    cudaMemcpy (tid_d, tid_cpu, sizeof (int) * 2000, cudaMemcpyHostToDevice);
+    //cudaMemcpy (tid_d, tid_cpu, sizeof (int) * 2000, cudaMemcpyHostToDevice);
 
   time_beg = wtime();
   prefix_scan_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth, tid_d );
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-      cudaMemcpy (tid_cpu, tid_d, sizeof (int) * 2000, cudaMemcpyDeviceToHost);
+     // cudaMemcpy (tid_cpu, tid_d, sizeof (int) * 2000, cudaMemcpyDeviceToHost);
 
-  auto el_gpu = wtime() - time_beg;
+
+     // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
+    // next element in next block. This is sequential process.
+    int res = 0;
+    for (int i=0;i<n;i++){
+         b_cpu[i]+=res;
+        if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
+    }
+    
+      auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < 250; i++) {    
