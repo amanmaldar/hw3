@@ -90,8 +90,8 @@ main (int args, char **argv)
   auto el_cpu = wtime() - time_beg;
   
   cout << "\n CPU Result is: "; 
-  for (int i = 0; i < n; i++) {
-     // cout << b_ref[i] << " ";   
+  for (int i = 0; i < 250; i++) {
+      cout << b_ref[i] << " ";   
   }  cout << endl;
   
   int *a_d, *b_d; //device storage pointers
@@ -108,7 +108,7 @@ main (int args, char **argv)
   auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
-  for (int i = 0; i < 100; i++) {    
+  for (int i = 0; i < 250; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
      // ASSERT(i == b_cpu[i], "Error at i= " << i);  
       cout << b_cpu[i] << " ";  
