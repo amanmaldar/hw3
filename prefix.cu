@@ -11,7 +11,6 @@
 #include "helper/wtime.h"
 using namespace std;
 
-
 #ifndef NDEBUG
 #   define ASSERT(condition, message) \
     do { \
@@ -30,45 +29,41 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
     prefixSum[0] = arr[0];
     // Adding present element with previous element
     for (int i = 1; i < n; i++)
-        prefixSum[i] = prefixSum[i-1] + arr[i];
+    prefixSum[i] = prefixSum[i-1] + arr[i];
 }
 
-__device__ int res=0;  //result from one block to next block
-__device__ int smem[32000000]; // 128*128 
-      
+__device__ int res=0;           //result from one block to next block
+__device__ int smem[32000000];  // maximum number of elements from array 
+
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
-  
-int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
-    
+    int tid = blockIdx.x* blockDim.x+ threadIdx.x; 
+    int d = 0;
+    int offset = 0;
 
+    while (tid < n) {
+    smem[tid] = a_d[tid];       // each thread copy data to shared memory
+    __syncthreads();            // wait for all threads
 
-  int d = 0;
-  int offset = 0;
-    
-  while (tid < n) {
-      smem[tid] = a_d[tid];   // copy data to shared memory
-  __syncthreads(); //wait for all threads
+    if (tid%16384 == 0 ) {   smem[tid]= res+ smem[tid]; __syncthreads();    b_d[tid] = smem[tid]; }  
 
-  if (tid%16384 == 0 ) {   smem[tid]= res+ smem[tid]; __syncthreads();    b_d[tid] = smem[tid]; }  
+    offset = 1;                 //1->2->4->8
+    for (d =0; d < depth ; d++) {                    
 
-  offset = 1; //1->2->4
-  for (d =0; d < depth ; d++){                        // depth = 3
-    
-    if (tid%16384 >= offset){  
-     
-      smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
-      __syncthreads();      
-       
-    }// end if
-    offset *=2;
-   } // end for 
-         b_d[tid] = smem[tid]; 
+        if (tid%16384 >= offset) {  
+            smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
+            __syncthreads();      
+        } // end if
 
-      __syncthreads();
+        offset *=2;
+    } // end for loop
+
+    b_d[tid] = smem[tid]; 
+
+    __syncthreads();
     if ((tid+1)%16384 == 0) {res = smem[tid];}
-      tid += 16384; //there are no actual grid present, we just increment the tid to fetch next elemennts from input array
-} // end while (tid < n)
+    tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
+    } // end while (tid < n)
 } // end kernel function
 
 
@@ -95,9 +90,9 @@ main (int args, char **argv)
   auto el_cpu = wtime() - time_beg;
   
   cout << "\n CPU Result is: "; 
-  for (int i = 0; i < n; i++) 
-  {// cout << b_ref[i] << " ";   
-  } cout << endl;
+  for (int i = 0; i < n; i++) {
+        // cout << b_ref[i] << " ";   
+  }  cout << endl;
   
   int *a_d, *b_d; //device storage pointers
 
@@ -110,17 +105,7 @@ main (int args, char **argv)
   vec_mult_kernel <<< numberOfBlocks,threadsInBlock >>> (b_d,a_d, n, depth );
 
   cudaMemcpy (b_cpu, b_d, sizeof (int) * n, cudaMemcpyDeviceToHost);
-          auto el_gpu = wtime() - time_beg;
-
-
-    // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
-    // next element in next block. This is sequential process.
-/*    int res = 0;
-    for (int i=0;i<n;i++){
-         b_cpu[i]+=res;
-        if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
-    }
-*/
+  auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
   for (int i = 0; i < n; i++) {    
@@ -130,5 +115,5 @@ main (int args, char **argv)
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
   cout << "GPU time is: " << el_gpu * 1000 << " mSec " << endl; 
-  return 0; //new
+  return 0; 
 }
