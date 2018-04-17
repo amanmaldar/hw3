@@ -59,7 +59,7 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
 
         __syncthreads();            // wait fir all threads to write results
         
-        if ((tid + 1) % 16384 == 0) { res = smem[tid]; inc++}
+        if ((tid + 1) % 16384 == 0) { res = smem[tid]; inc++;}
         tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
         
         if (tid == 32000001) { printf("\n incremented %d times\n", inc); } 
