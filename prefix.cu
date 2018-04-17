@@ -34,7 +34,9 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 }
 
 __device__ int res=0;  //result from one block to next block
-__device__ int smem[32000000]; // 128*128
+__device__ int smem[32000000]; // 128*128 
+__device__ int tmp1;
+      
 
 __global__ void vec_mult_kernel (int *b_d, int *a_d, int n, int depth) {
   
@@ -66,16 +68,16 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
 
       __syncthreads();
      // 3 new line below
-      __shared__ int tmp1;
+     
       if (blockIdx.x != 0 && threadIdx.x == 0) 
       {
           tmp1 = smem[tid-1]; __syncthreads();
           smem[tid] += 1000; __syncthreads();
       }
-      elseif( blockIdx.x != 0 & threadIdx.x > 0 & threadIdx.x < 4)
-          {
-            smem[tid]+= tmp1; __syncthreads();
-          }
+      else if( blockIdx.x != 0 & threadIdx.x > 0 & threadIdx.x < 4)
+      {
+        smem[tid]+= tmp1; __syncthreads();
+      }
       
       b_d[tid] = smem[tid]; 
    
