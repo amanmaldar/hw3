@@ -67,7 +67,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       __syncthreads();
      // 3 new line below
       __shared__ int tmp1;
-      if (blockIdx.x != 0 & threadIdx.x == 0) 
+      if (blockIdx.x != 0 && threadIdx.x == 0) 
       {
           tmp1 = smem[tid-1]; __syncthreads();
           smem[tid] += 1000; __syncthreads();
