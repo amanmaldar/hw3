@@ -91,7 +91,7 @@ main (int args, char **argv)
   auto el_cpu = wtime() - time_beg;
   
   cout << "\n CPU Result is: "; 
-  for (int i = 0; i < 250; i++) {
+  for (int i = 31999700; i < n; i++) {    
       cout << b_ref[i] << " ";   
   }  cout << endl;
   
@@ -115,7 +115,7 @@ main (int args, char **argv)
      // cpu combines the results of each block with next block. cpu basically adds last element from previos block to
     // next element in next block. This is sequential process.
     int res = 0;
-  for (int i = 31999700; i < n; i++) {    
+  for (int i = 0; i < n; i++) {    
          b_cpu[i]+=res;
         if((i+1)%threadsInBlock==0){ res = b_cpu[i]; }        
     }
