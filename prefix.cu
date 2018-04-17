@@ -109,10 +109,10 @@ main (int args, char **argv)
   auto el_gpu = wtime() - time_beg;
 
   cout << "\n GPU Result is: ";
-  for (int i = 0; i < n; i++) {    
+  for (int i = 0; i < 100; i++) {    
       //ASSERT(b_ref[i] == b_cpu[i], "Error at i= " << i);  
-      ASSERT(i == b_cpu[i], "Error at i= " << i);  
-      //cout << b_cpu[i] << " ";  
+     // ASSERT(i == b_cpu[i], "Error at i= " << i);  
+      cout << b_cpu[i] << " ";  
   } cout << endl;
 
   cout << "CPU time is: " << el_cpu * 1000 << " mSec " << endl;
