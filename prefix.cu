@@ -69,15 +69,15 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       __shared__ int tmp1;
       if (blockIdx.x != 0 & threadIdx.x == 0) 
       {
-          tmp1 = smem[tid-1]; __syncthreads();
-          smem[tid] += tmp1; __syncthreads();
+          tmp1 = b_d[tid-1]; __syncthreads();
+          b_d[tid] += tmp1; __syncthreads();
       }
       else
       {
             if( blockIdx.x != 0 & threadIdx.x > 0 & threadIdx.x < 4){
-          smem[tid]+= tmp1; __syncthreads();}
+          b_d[tid]+= tmp1; __syncthreads();}
       }
-      b_d[tid] = smem[tid]; 
+     // b_d[tid] = smem[tid]; 
    
       //uncomment//b_d[tid] = tid; 
       __syncthreads();
