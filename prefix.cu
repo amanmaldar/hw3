@@ -81,7 +81,7 @@ int tid = blockIdx.x* blockDim.x+ threadIdx.x;
       {
           printf("test1.5 before block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
       //  smem[tid]+= tmp1; __syncthreads();
-       //   printf("test2 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
+          printf("test2 block %d, thread %d tid %d smem[tid] %d\n", blockIdx.x, threadIdx.x,tid, smem[tid]);
       }
       
      b_d[tid] = smem[tid]; 
