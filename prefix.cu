@@ -30,7 +30,7 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
 
 __device__ int res=0;           //result from one block to next block
 __device__ int inc=0;
-__device__ int smem[128];  // maximum number of elements from array 
+__shared__ int smem[128];  // maximum number of elements from array 
 
 
 __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
@@ -39,7 +39,7 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
     int offset = 0;
 
     while (tid < n) {
-        smem[tid] = a_d[tid];       // each thread copy data to shared memory
+        smem[threadIdx.x] = a_d[tid];       // each thread copy data to shared memory
         __syncthreads();            // wait for all threads
 
         //if (tid%16384 == 0 ) {   smem[tid] += res; __syncthreads();  } // result are written at the end*  
@@ -47,19 +47,18 @@ __global__ void prefix_scan_kernel (int *b_d, int *a_d, int n, int depth) {
         offset = 1;                 //1->2->4->8
         for (d =0; d < depth ; d++) {                    
 
-            if (tid%16384 >= offset) {  
-                smem[tid] += smem[tid-offset] ;           //after writing to smem do synchronize
+            if (threadIdx.x >= offset) {  
+                smem[threadIdx.x] += smem[threadIdx.x-offset] ;           //after writing to smem do synchronize
                 __syncthreads();      
             } // end if
 
             offset *=2;
         } // end for loop
 
-        //b_d[tid] = smem[tid] + res;        // *write the result to array b_d[tid] location
-        *b_d[tid] = *a_d[tid];
-       // __syncthreads();            // wait fir all threads to write results
+        b_d[tid] = smem[threadIdx.x];        // *write the result to array b_d[tid] location
+        __syncthreads();            // wait fir all threads to write results
         
-        if ((tid + 1) % 16384 == 0) { res = smem[tid]; inc++;}
+        if ((tid + 1) % 16384 == 0) { inc++;}
         tid += 16384;               //there are no actual grid present, we just increment the tid to fetch next elemennts from input array.
         
         if (tid == 32000001) { printf("\n incremented %d times\n", inc); } 
@@ -74,7 +73,7 @@ main (int args, char **argv)
   int numberOfBlocks = 128;
   //int n = threadsInBlock*numberOfBlocks;
   int n = 32000000;
-  int depth = log2(16384);  
+  int depth = log2(128);  
 
   int *a_cpu= (int *)malloc(sizeof(int)*n);
   int *b_cpu= (int *)malloc(sizeof(int)*n);
