@@ -1,6 +1,7 @@
 // assert ref : https://stackoverflow.com/questions/3767869/adding-message-to-assert?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 // cpu prefix sum ref: https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/ 
 // performance meaurement ref: https://www.mimuw.edu.pl/~ps209291/kgkp/slides/scan.pdf
+// print from cuda kernel function - http://15418.courses.cs.cmu.edu/spring2013/article/15
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
